@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Công cụ Xử lý TKB - Dành cho Giáo viên</title>
+    <link rel="icon" type="image/png" href="../favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300..900;1,300..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../style.css" />
+    <script>
+      localStorage.setItem("user_role", "teacher");
+    </script>
+  </head>
+  <body>
+    <header class="top-bar">
+      <div class="top-bar-actions">
+        <a
+          id="downloadTkbBtn"
+          href="https://thptcamgiang.haiphong.edu.vn/thoi-khoa-bieu/c/37065"
+          class="btn btn-secondary btn-small"
+          target="_blank"
+          rel="noopener"
+          >📥 Tải TKB</a
+        >
+        <a
+          id="guideBtn"
+          href="../HDSD/GV.html"
+          class="btn btn-secondary btn-small"
+          target="_blank"
+          rel="noopener"
+          >❓ HDSD</a
+        >
+      </div>
+      <div class="segmented-control">
+        <input
+          type="radio"
+          name="theme-select"
+          id="theme-light"
+          value="light"
+        />
+        <label for="theme-light" title="Giao diện sáng">☀️</label>
+        <input type="radio" name="theme-select" id="theme-dark" value="dark" />
+        <label for="theme-dark" title="Giao diện tối">🌙</label>
+        <div class="glider"></div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="brand-zone">
+        <h1 class="main-title">TẠO THỜI KHÓA BIỂU</h1>
+        <div class="role-tabs">
+          <a href="../student/" class="role-tab">🎓 Dành cho Học sinh</a>
+          <a href="#" class="role-tab active">👨‍🏫 Dành cho Giáo viên</a>
+        </div>
+        <p class="sub-title">
+          Trích xuất thời khóa biểu giảng dạy dành riêng cho Quý Thầy/Cô một
+          cách tự động.
+        </p>
+      </div>
+
+      <section class="card upload-card">
+        <div class="upload-zone" id="dropZone">
+          <div class="upload-icon">📂</div>
+          <label for="pdfFile" class="upload-label">
+            <span class="highlight">Chọn một tệp TKB tổng</span
+            ><span class="desktop-only"> hoặc kéo thả vào đây</span>
+          </label>
+          <input type="file" id="pdfFile" accept="application/pdf" />
+          <p id="fileNameDisplay" class="file-name-text hidden"></p>
+        </div>
+
+        <div
+          id="classSelectionContainer"
+          class="class-selection-box hidden"
+          style="margin-top: 20px; text-align: left"
+        >
+          <label
+            for="classInput"
+            style="
+              display: block;
+              font-weight: 600;
+              margin-bottom: 8px;
+              color: var(--text-color);
+            "
+          >
+            Tìm kiếm & Chọn tên Giáo Viên:
+          </label>
+          <input
+            type="text"
+            id="classInput"
+            list="teacherList"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 1px solid #ccc;
+              border-radius: 8px;
+              font-size: 16px;
+              font-family: &quot;Mulish&quot;, sans-serif;
+              box-sizing: border-box;
+            "
+            placeholder="Gõ tên để tìm..."
+          />
+          <datalist id="teacherList"></datalist>
+        </div>
+
+        <div
+          class="afternoon-toggle-box"
+          style="margin-top: 15px; text-align: left"
+        >
+          <label class="toggle-container">
+            <input type="checkbox" id="enableAfternoon" />
+            <span class="toggle-slider"></span>
+            <span
+              class="toggle-label"
+              style="font-weight: 600; margin-left: 10px"
+              >Thêm lịch dạy buổi chiều</span
+            >
+          </label>
+        </div>
+
+        <div
+          id="afternoonSetup"
+          class="hidden"
+          style="
+            margin-top: 15px;
+            text-align: left;
+            background: var(--bg-input);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+          "
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 15px;
+            "
+          >
+            <h4
+              style="font-size: 14px; color: var(--text-secondary); margin: 0"
+            >
+              ⏰ Khung giờ dạy chiều:
+            </h4>
+
+            <div style="display: flex; align-items: center; gap: 8px">
+              <label for="numPeriods" style="font-size: 13px; font-weight: 600"
+                >Số ca:</label
+              >
+              <select
+                id="numPeriods"
+                style="
+                  padding: 4px 8px;
+                  border-radius: 6px;
+                  border: 1px solid var(--border-color);
+                  background: var(--bg-card);
+                  color: var(--text-primary);
+                  font-family: &quot;Mulish&quot;, sans-serif;
+                "
+              >
+                <option value="1">1 ca</option>
+                <option value="2" selected>2 ca</option>
+                <option value="3">3 ca</option>
+                <option value="4">4 ca</option>
+                <option value="5">5 ca</option>
+                <option value="6">6 ca</option>
+              </select>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 8px;
+              margin-bottom: 20px;
+            "
+          >
+            <div class="time-row" id="time_row_1">
+              <span class="period-label">Ca 1:</span>
+              <input
+                type="time"
+                id="start_1"
+                class="time-input-sm"
+                value="14:00"
+              />
+              <span class="arrow">→</span>
+              <input
+                type="time"
+                id="end_1"
+                class="time-input-sm"
+                value="14:45"
+              />
+            </div>
+            <div class="time-row" id="time_row_2">
+              <span class="period-label">Ca 2:</span>
+              <input
+                type="time"
+                id="start_2"
+                class="time-input-sm"
+                value="14:50"
+              />
+              <span class="arrow">→</span>
+              <input
+                type="time"
+                id="end_2"
+                class="time-input-sm"
+                value="15:35"
+              />
+            </div>
+            <div class="time-row hidden" id="time_row_3">
+              <span class="period-label">Ca 3:</span>
+              <input
+                type="time"
+                id="start_3"
+                class="time-input-sm"
+                value="15:45"
+              />
+              <span class="arrow">→</span>
+              <input
+                type="time"
+                id="end_3"
+                class="time-input-sm"
+                value="16:30"
+              />
+            </div>
+            <div class="time-row hidden" id="time_row_4">
+              <span class="period-label">Ca 4:</span>
+              <input
+                type="time"
+                id="start_4"
+                class="time-input-sm"
+                value="16:35"
+              />
+              <span class="arrow">→</span>
+              <input
+                type="time"
+                id="end_4"
+                class="time-input-sm"
+                value="17:20"
+              />
+            </div>
+            <div class="time-row hidden" id="time_row_5">
+              <span class="period-label">Ca 5:</span>
+              <input
+                type="time"
+                id="start_5"
+                class="time-input-sm"
+                value="17:25"
+              />
+              <span class="arrow">→</span>
+              <input
+                type="time"
+                id="end_5"
+                class="time-input-sm"
+                value="18:10"
+              />
+            </div>
+            <div class="time-row hidden" id="time_row_6">
+              <span class="period-label">Ca 6:</span>
+              <input
+                type="time"
+                id="start_6"
+                class="time-input-sm"
+                value="18:15"
+              />
+              <span class="arrow">→</span>
+              <input
+                type="time"
+                id="end_6"
+                class="time-input-sm"
+                value="19:00"
+              />
+            </div>
+          </div>
+
+          <h4
+            style="
+              margin-bottom: 10px;
+              font-size: 14px;
+              color: var(--text-secondary);
+            "
+          >
+            📚 Nhập lớp dạy (Cách nhau bởi dấu phẩy):
+          </h4>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <div class="day-row">
+              <span>Thứ 2:</span>
+              <div class="day-inputs" id="aft_container_2"></div>
+            </div>
+            <div class="day-row">
+              <span>Thứ 3:</span>
+              <div class="day-inputs" id="aft_container_3"></div>
+            </div>
+            <div class="day-row">
+              <span>Thứ 4:</span>
+              <div class="day-inputs" id="aft_container_4"></div>
+            </div>
+            <div class="day-row">
+              <span>Thứ 5:</span>
+              <div class="day-inputs" id="aft_container_5"></div>
+            </div>
+            <div class="day-row">
+              <span>Thứ 6:</span>
+              <div class="day-inputs" id="aft_container_6"></div>
+            </div>
+            <div class="day-row">
+              <span>Thứ 7:</span>
+              <div class="day-inputs" id="aft_container_7"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="submitContainer" class="hidden text-center mt-24">
+          <button id="uploadBtn" class="btn btn-primary">
+            Tiến Hành Xử Lý
+          </button>
+        </div>
+
+        <div id="loadingBox" class="loading-box hidden">
+          <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-text">
+              <p class="loading-main">Đang tiến hành xử lý!</p>
+              <p class="loading-sub">Vui lòng đợi...</p>
+            </div>
+          </div>
+          <button id="cancelProcessBtn" class="btn btn-danger btn-small">
+            Hủy 🛑
+          </button>
+        </div>
+      </section>
+
+      <section id="resultCard" class="card result-card hidden">
+        <div class="result-header">
+          <span class="status-badge">✓ Đã xử lý xong</span>
+        </div>
+
+        <div class="grid-layout">
+          <div class="grid-column">
+            <h3 class="section-heading">Ảnh Thời Khóa Biểu</h3>
+            <div class="image-wrapper">
+              <img id="tkbImage" src="" alt="Thời khóa biểu ảnh" />
+            </div>
+            <div class="action-buttons">
+              <button id="printBtn" class="btn btn-secondary">In 🖨️</button>
+              <button id="downloadPdfBtn" class="btn btn-secondary">
+                Tải PDF 📄
+              </button>
+              <button id="downloadBtn" class="btn btn-success">
+                Tải ảnh xuống ⬇️
+              </button>
+              <button id="reprocessBtn" class="btn btn-danger">
+                Xử lý lại 🔄
+              </button>
+            </div>
+          </div>
+
+          <div class="grid-column">
+            <div class="text-header-row">
+              <h3 class="section-heading">Văn bản rút gọn</h3>
+              <button id="copyBtn" class="btn btn-action-small">
+                Sao chép
+              </button>
+            </div>
+            <textarea
+              id="shortText"
+              readonly
+              class="modern-textarea"
+              placeholder="Nội dung sẽ xuất hiện tại đây..."
+            ></textarea>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        © 2026 TKB Tools. Một dự án của Trần Công Thành - K60G THPT Cẩm Giàng.
+      </p>
+      <div class="footer-links">
+        <a href="../feedback/" class="footer-link">💬 Gửi góp ý & Báo lỗi</a>
+        <a
+          href="https://github.com/TKBTools"
+          class="footer-link github-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg class="github-icon" viewBox="0 0 24 24" width="16" height="16">
+            <path
+              fill="currentColor"
+              d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"
+            />
+          </svg>
+          <span>GitHub Repo</span>
+        </a>
+      </div>
+    </footer>
+
+    <div id="lightboxOverlay" class="lightbox-overlay">
+      <span id="lightboxClose" class="lightbox-close">&times;</span>
+      <img
+        id="lightboxImg"
+        class="lightbox-img"
+        src=""
+        alt="Ảnh TKB phóng to"
+      />
+      <p class="lightbox-hint desktop-only">
+        Dùng con lăn chuột để phóng to / thu nhỏ
+      </p>
+    </div>
+
+    <script src="../scripts.js"></script>
+  </body>
+</html>

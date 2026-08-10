@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Đang chuyển hướng...</title>
+    <link rel="icon" type="image/png" href="../favicon.png" />
+    <script>
+      const lastRole = localStorage.getItem("user_role");
+
+      if (lastRole === "teacher") {
+        window.location.replace("./teacher/");
+      } else {
+        localStorage.setItem("user_role", "student");
+        window.location.replace("./student/");
+      }
+    </script>
+  </head>
+  <body></body>
+</html>
