@@ -357,7 +357,7 @@ uploadBtn.addEventListener("click", async () => {
       "Máy chủ đang khởi động (có thể mất 30s - 1 phút). Vui lòng đợi và KHÔNG tắt trang...";
     loadingSub.style.color = "var(--accent-color)";
     loadingSub.style.fontWeight = "bold";
-  }, 5000);
+  }, 25000);
 
   try {
     const TARGET_URL = isTeacherMode
