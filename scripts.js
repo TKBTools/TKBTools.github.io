@@ -197,17 +197,33 @@ function loadLocalData() {
     renderAfternoonInputs(2);
   }
 }
+
 loadLocalData();
+const noticeModal = document.getElementById("devNoticeModal");
+const dismissBtn = document.getElementById("dismissNoticeBtn");
+if (noticeModal && dismissBtn) {
+  const isDismissed = localStorage.getItem("dev_notice_dismissed");
+  if (!isDismissed) {
+    noticeModal.classList.add("active");
+  }
+  dismissBtn.addEventListener("click", () => {
+    localStorage.setItem("dev_notice_dismissed", "true");
+    noticeModal.classList.remove("active");
+  });
+}
 
 fileInput.addEventListener("change", async () => {
   if (fileInput.files.length > 0) {
     const file = fileInput.files[0];
+    const validExts = ["pdf", "xlsx", "xls", "csv"];
+    const ext = file.name.split(".").pop().toLowerCase();
 
-    if (file.type !== "application/pdf") {
-      alert("Lỗi: Vui lòng chỉ chọn tệp định dạng PDF!");
+    if (!validExts.includes(ext)) {
+      alert("Lỗi: Vui lòng chỉ chọn tệp định dạng PDF, XLSX hoặc CSV!");
       resetFileInput();
       return;
     }
+
     if (file.size > 10 * 1024 * 1024) {
       alert("Lỗi: Kích thước tệp quá lớn. Vui lòng chọn tệp dưới 10MB!");
       resetFileInput();
@@ -244,6 +260,31 @@ fileInput.addEventListener("change", async () => {
           fileNameDisplay.innerText = `📂 Tệp đã chọn: ${file.name} (Đã tìm thấy ${data.teachers.length} Giáo Viên)`;
           classSelectionContainer.classList.remove("hidden");
           submitContainer.classList.remove("hidden");
+
+          if (data.metadata) {
+            const has_afternoon = data.metadata.has_afternoon;
+            const has_time = data.metadata.has_time;
+
+            const aftTimeSec = document.getElementById("aftTimeSection");
+            const aftSubjSec = document.getElementById("aftSubjectsSection");
+
+            if (has_afternoon) {
+              enableAfternoon.checked = true;
+              enableAfternoon.disabled = true;
+
+              if (!has_time) {
+                afternoonSetup.classList.remove("hidden");
+                if (aftTimeSec) aftTimeSec.classList.remove("hidden");
+                if (aftSubjSec) aftSubjSec.classList.add("hidden");
+              } else {
+                afternoonSetup.classList.add("hidden");
+              }
+            } else {
+              enableAfternoon.disabled = false;
+              if (aftTimeSec) aftTimeSec.classList.remove("hidden");
+              if (aftSubjSec) aftSubjSec.classList.remove("hidden");
+            }
+          }
         } else {
           alert("Lỗi đọc file: " + data.error);
           resetFileInput();
@@ -322,7 +363,7 @@ uploadBtn.addEventListener("click", async () => {
     formData.append("file", fileInput.files[0]);
   }
 
-  if (enableAfternoon.checked) {
+  if (enableAfternoon.checked && !enableAfternoon.disabled) {
     const numPeriods = parseInt(document.getElementById("numPeriods").value);
     const timesArray = [];
 
@@ -337,12 +378,31 @@ uploadBtn.addEventListener("click", async () => {
     for (let day = 2; day <= 7; day++) {
       const daySubjects = [];
       for (let p = 1; p <= numPeriods; p++) {
-        const val = document.getElementById(`aft_${day}_${p}`).value.trim();
+        const subjEl = document.getElementById(`aft_${day}_${p}`);
+        const val = subjEl ? subjEl.value.trim() : "";
         daySubjects.push(val !== "" ? val : "—");
       }
       afternoonData.schedule[day] = daySubjects;
     }
+    
     formData.append("afternoon_data", JSON.stringify(afternoonData));
+    
+  } else if (enableAfternoon.checked && enableAfternoon.disabled) {
+    
+    const aftTimeSec = document.getElementById("aftTimeSection");
+
+    if (aftTimeSec && !aftTimeSec.classList.contains("hidden")) {
+      const numPeriods = parseInt(document.getElementById("numPeriods").value);
+      const timesArray = [];
+
+      for (let i = 1; i <= numPeriods; i++) {
+        const start = document.getElementById(`start_${i}`).value;
+        const end = document.getElementById(`end_${i}`).value;
+        if (start && end) timesArray.push(`${start} → ${end}`);
+        else timesArray.push("—");
+      }
+      formData.append("afternoon_times_only", JSON.stringify(timesArray));
+    }
   }
 
   uploadBtn.disabled = true;

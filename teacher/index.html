@@ -70,7 +70,7 @@
             <span class="highlight">Chọn một tệp TKB tổng</span
             ><span class="desktop-only"> hoặc kéo thả vào đây</span>
           </label>
-          <input type="file" id="pdfFile" accept="application/pdf" />
+          <input type="file" id="pdfFile" accept=".pdf, .xlsx, .xls, .csv" />
           <p id="fileNameDisplay" class="file-name-text hidden"></p>
         </div>
 
@@ -135,184 +135,188 @@
             border: 1px solid var(--border-color);
           "
         >
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin-bottom: 15px;
-            "
-          >
-            <h4
-              style="font-size: 14px; color: var(--text-secondary); margin: 0"
+          <div id="aftTimeSection">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+              "
             >
-              ⏰ Khung giờ dạy chiều:
+              <h4
+                style="font-size: 14px; color: var(--text-secondary); margin: 0"
+              >
+                ⏰ Khung giờ dạy chiều:
+              </h4>
+              <div style="display: flex; align-items: center; gap: 8px">
+                <label
+                  for="numPeriods"
+                  style="font-size: 13px; font-weight: 600"
+                  >Số ca:</label
+                >
+                <select
+                  id="numPeriods"
+                  style="
+                    padding: 4px 8px;
+                    border-radius: 6px;
+                    border: 1px solid var(--border-color);
+                    background: var(--bg-card);
+                    color: var(--text-primary);
+                    font-family: &quot;Mulish&quot;, sans-serif;
+                  "
+                >
+                  <option value="1">1 ca</option>
+                  <option value="2" selected>2 ca</option>
+                  <option value="3">3 ca</option>
+                  <option value="4">4 ca</option>
+                  <option value="5">5 ca</option>
+                  <option value="6">6 ca</option>
+                </select>
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                margin-bottom: 20px;
+              "
+            >
+              <div class="time-row" id="time_row_1">
+                <span class="period-label">Ca 1:</span>
+                <input
+                  type="time"
+                  id="start_1"
+                  class="time-input-sm"
+                  value="14:00"
+                />
+                <span class="arrow">→</span>
+                <input
+                  type="time"
+                  id="end_1"
+                  class="time-input-sm"
+                  value="14:45"
+                />
+              </div>
+              <div class="time-row" id="time_row_2">
+                <span class="period-label">Ca 2:</span>
+                <input
+                  type="time"
+                  id="start_2"
+                  class="time-input-sm"
+                  value="14:50"
+                />
+                <span class="arrow">→</span>
+                <input
+                  type="time"
+                  id="end_2"
+                  class="time-input-sm"
+                  value="15:35"
+                />
+              </div>
+              <div class="time-row hidden" id="time_row_3">
+                <span class="period-label">Ca 3:</span>
+                <input
+                  type="time"
+                  id="start_3"
+                  class="time-input-sm"
+                  value="15:45"
+                />
+                <span class="arrow">→</span>
+                <input
+                  type="time"
+                  id="end_3"
+                  class="time-input-sm"
+                  value="16:30"
+                />
+              </div>
+              <div class="time-row hidden" id="time_row_4">
+                <span class="period-label">Ca 4:</span>
+                <input
+                  type="time"
+                  id="start_4"
+                  class="time-input-sm"
+                  value="16:35"
+                />
+                <span class="arrow">→</span>
+                <input
+                  type="time"
+                  id="end_4"
+                  class="time-input-sm"
+                  value="17:20"
+                />
+              </div>
+              <div class="time-row hidden" id="time_row_5">
+                <span class="period-label">Ca 5:</span>
+                <input
+                  type="time"
+                  id="start_5"
+                  class="time-input-sm"
+                  value="17:25"
+                />
+                <span class="arrow">→</span>
+                <input
+                  type="time"
+                  id="end_5"
+                  class="time-input-sm"
+                  value="18:10"
+                />
+              </div>
+              <div class="time-row hidden" id="time_row_6">
+                <span class="period-label">Ca 6:</span>
+                <input
+                  type="time"
+                  id="start_6"
+                  class="time-input-sm"
+                  value="18:15"
+                />
+                <span class="arrow">→</span>
+                <input
+                  type="time"
+                  id="end_6"
+                  class="time-input-sm"
+                  value="19:00"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div id="aftSubjectsSection">
+            <h4
+              style="
+                margin-bottom: 10px;
+                font-size: 14px;
+                color: var(--text-secondary);
+              "
+            >
+              📚 Nhập lớp dạy (Cách nhau bởi dấu phẩy):
             </h4>
-
-            <div style="display: flex; align-items: center; gap: 8px">
-              <label for="numPeriods" style="font-size: 13px; font-weight: 600"
-                >Số ca:</label
-              >
-              <select
-                id="numPeriods"
-                style="
-                  padding: 4px 8px;
-                  border-radius: 6px;
-                  border: 1px solid var(--border-color);
-                  background: var(--bg-card);
-                  color: var(--text-primary);
-                  font-family: &quot;Mulish&quot;, sans-serif;
-                "
-              >
-                <option value="1">1 ca</option>
-                <option value="2" selected>2 ca</option>
-                <option value="3">3 ca</option>
-                <option value="4">4 ca</option>
-                <option value="5">5 ca</option>
-                <option value="6">6 ca</option>
-              </select>
-            </div>
-          </div>
-
-          <div
-            style="
-              display: flex;
-              flex-direction: column;
-              gap: 8px;
-              margin-bottom: 20px;
-            "
-          >
-            <div class="time-row" id="time_row_1">
-              <span class="period-label">Ca 1:</span>
-              <input
-                type="time"
-                id="start_1"
-                class="time-input-sm"
-                value="14:00"
-              />
-              <span class="arrow">→</span>
-              <input
-                type="time"
-                id="end_1"
-                class="time-input-sm"
-                value="14:45"
-              />
-            </div>
-            <div class="time-row" id="time_row_2">
-              <span class="period-label">Ca 2:</span>
-              <input
-                type="time"
-                id="start_2"
-                class="time-input-sm"
-                value="14:50"
-              />
-              <span class="arrow">→</span>
-              <input
-                type="time"
-                id="end_2"
-                class="time-input-sm"
-                value="15:35"
-              />
-            </div>
-            <div class="time-row hidden" id="time_row_3">
-              <span class="period-label">Ca 3:</span>
-              <input
-                type="time"
-                id="start_3"
-                class="time-input-sm"
-                value="15:45"
-              />
-              <span class="arrow">→</span>
-              <input
-                type="time"
-                id="end_3"
-                class="time-input-sm"
-                value="16:30"
-              />
-            </div>
-            <div class="time-row hidden" id="time_row_4">
-              <span class="period-label">Ca 4:</span>
-              <input
-                type="time"
-                id="start_4"
-                class="time-input-sm"
-                value="16:35"
-              />
-              <span class="arrow">→</span>
-              <input
-                type="time"
-                id="end_4"
-                class="time-input-sm"
-                value="17:20"
-              />
-            </div>
-            <div class="time-row hidden" id="time_row_5">
-              <span class="period-label">Ca 5:</span>
-              <input
-                type="time"
-                id="start_5"
-                class="time-input-sm"
-                value="17:25"
-              />
-              <span class="arrow">→</span>
-              <input
-                type="time"
-                id="end_5"
-                class="time-input-sm"
-                value="18:10"
-              />
-            </div>
-            <div class="time-row hidden" id="time_row_6">
-              <span class="period-label">Ca 6:</span>
-              <input
-                type="time"
-                id="start_6"
-                class="time-input-sm"
-                value="18:15"
-              />
-              <span class="arrow">→</span>
-              <input
-                type="time"
-                id="end_6"
-                class="time-input-sm"
-                value="19:00"
-              />
-            </div>
-          </div>
-
-          <h4
-            style="
-              margin-bottom: 10px;
-              font-size: 14px;
-              color: var(--text-secondary);
-            "
-          >
-            📚 Nhập lớp dạy (Cách nhau bởi dấu phẩy):
-          </h4>
-          <div style="display: flex; flex-direction: column; gap: 8px">
-            <div class="day-row">
-              <span>Thứ 2:</span>
-              <div class="day-inputs" id="aft_container_2"></div>
-            </div>
-            <div class="day-row">
-              <span>Thứ 3:</span>
-              <div class="day-inputs" id="aft_container_3"></div>
-            </div>
-            <div class="day-row">
-              <span>Thứ 4:</span>
-              <div class="day-inputs" id="aft_container_4"></div>
-            </div>
-            <div class="day-row">
-              <span>Thứ 5:</span>
-              <div class="day-inputs" id="aft_container_5"></div>
-            </div>
-            <div class="day-row">
-              <span>Thứ 6:</span>
-              <div class="day-inputs" id="aft_container_6"></div>
-            </div>
-            <div class="day-row">
-              <span>Thứ 7:</span>
-              <div class="day-inputs" id="aft_container_7"></div>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div class="day-row">
+                <span>Thứ 2:</span>
+                <div class="day-inputs" id="aft_container_2"></div>
+              </div>
+              <div class="day-row">
+                <span>Thứ 3:</span>
+                <div class="day-inputs" id="aft_container_3"></div>
+              </div>
+              <div class="day-row">
+                <span>Thứ 4:</span>
+                <div class="day-inputs" id="aft_container_4"></div>
+              </div>
+              <div class="day-row">
+                <span>Thứ 5:</span>
+                <div class="day-inputs" id="aft_container_5"></div>
+              </div>
+              <div class="day-row">
+                <span>Thứ 6:</span>
+                <div class="day-inputs" id="aft_container_6"></div>
+              </div>
+              <div class="day-row">
+                <span>Thứ 7:</span>
+                <div class="day-inputs" id="aft_container_7"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -414,6 +418,42 @@
       <p class="lightbox-hint desktop-only">
         Dùng con lăn chuột để phóng to / thu nhỏ
       </p>
+    </div>
+
+    <div id="devNoticeModal" class="lightbox-overlay">
+      <div
+        class="modal-content card"
+        style="
+          max-width: 500px;
+          width: 90%;
+          text-align: center;
+          position: relative;
+        "
+      >
+        <h3 style="margin-bottom: 15px; color: var(--accent-color)">
+          Lưu ý từ Nhà Phát Triển
+        </h3>
+        <p
+          style="
+            margin-bottom: 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+          "
+        >
+          Trang đang trong quá trình phát triển và chỉ có thể xử lý TKB của một
+          vài trường. Nếu bạn xử lý tệp của trường mình bị lỗi, hãy nhấn nút
+          <strong>"💬 Gửi góp ý & Báo lỗi"</strong> ở chân trang và đính kèm tệp
+          TKB toàn trường để nhà phát triển lấy mẫu nhé.<br /><br />Xin cảm ơn!
+        </p>
+        <button
+          id="dismissNoticeBtn"
+          class="btn btn-primary"
+          style="width: 100%"
+        >
+          Đã hiểu
+        </button>
+      </div>
     </div>
 
     <script src="../scripts.js"></script>

@@ -70,7 +70,7 @@
             <span class="highlight">Chọn một tệp TKB tổng</span
             ><span class="desktop-only"> hoặc kéo thả vào đây</span>
           </label>
-          <input type="file" id="pdfFile" accept="application/pdf" />
+          <input type="file" id="pdfFile" accept=".pdf, .xlsx, .xls, .csv" />
           <p id="fileNameDisplay" class="file-name-text hidden"></p>
         </div>
 
@@ -411,6 +411,42 @@
       <p class="lightbox-hint desktop-only">
         Dùng con lăn chuột để phóng to / thu nhỏ
       </p>
+    </div>
+
+    <div id="devNoticeModal" class="lightbox-overlay">
+      <div
+        class="modal-content card"
+        style="
+          max-width: 500px;
+          width: 90%;
+          text-align: center;
+          position: relative;
+        "
+      >
+        <h3 style="margin-bottom: 15px; color: var(--accent-color)">
+          Lưu ý từ Nhà Phát Triển
+        </h3>
+        <p
+          style="
+            margin-bottom: 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+          "
+        >
+          Trang đang trong quá trình phát triển và chỉ có thể xử lý TKB của một
+          vài trường. Nếu bạn xử lý tệp của trường mình bị lỗi, hãy nhấn nút
+          <strong>"💬 Gửi góp ý & Báo lỗi"</strong> ở chân trang và đính kèm tệp
+          TKB toàn trường để nhà phát triển lấy mẫu nhé.<br /><br />Xin cảm ơn!
+        </p>
+        <button
+          id="dismissNoticeBtn"
+          class="btn btn-primary"
+          style="width: 100%"
+        >
+          Đã hiểu
+        </button>
+      </div>
     </div>
 
     <script src="../scripts.js"></script>

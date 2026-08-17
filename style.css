@@ -802,19 +802,23 @@ body {
   flex-direction: column;
   gap: 20px;
 }
+
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 .form-label {
   font-weight: 700;
   font-size: 15px;
   color: var(--text-primary);
 }
+
 .text-danger {
   color: #ef4444;
 }
+
 .form-control {
   width: 100%;
   padding: 12px 16px;
@@ -827,15 +831,27 @@ body {
   transition: border-color 0.2s;
   box-sizing: border-box;
 }
+
 .form-control:focus {
   outline: none;
   border-color: var(--accent-color);
 }
+
 .form-control::placeholder {
   color: var(--text-secondary);
 }
+
 input[type="file"].form-control {
   padding: 8px;
   background-color: var(--bg-input);
   cursor: pointer;
+}
+
+.modal-content {
+  background: var(--bg-card);
+  padding: 30px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  z-index: 2002;
 }
