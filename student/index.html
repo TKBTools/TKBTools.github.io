@@ -70,7 +70,16 @@
             <span class="highlight">Chọn một tệp TKB tổng</span
             ><span class="desktop-only"> hoặc kéo thả vào đây</span>
           </label>
-          <input type="file" id="pdfFile" accept=".pdf, .xlsx, .xls, .csv" />
+          <input type="file" id="pdfFile" accept=".pdf" />
+          <p
+            style="
+              color: var(--text-secondary);
+              font-size: 13px;
+              margin-top: 8px;
+            "
+          >
+            * Chỉ hỗ trợ tệp định dạng .PDF
+          </p>
           <p id="fileNameDisplay" class="file-name-text hidden"></p>
         </div>
 
@@ -105,211 +114,361 @@
           />
         </div>
 
-        <div
-          class="afternoon-toggle-box"
-          style="margin-top: 15px; text-align: left"
-        >
-          <label class="toggle-container">
-            <input type="checkbox" id="enableAfternoon" />
-            <span class="toggle-slider"></span>
-            <span
-              class="toggle-label"
-              style="font-weight: 600; margin-left: 10px"
-              >Thêm lịch học buổi chiều</span
-            >
-          </label>
-        </div>
-
-        <div
-          id="afternoonSetup"
-          class="hidden"
-          style="
-            margin-top: 15px;
-            text-align: left;
-            background: var(--bg-input);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-          "
-        >
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin-bottom: 15px;
-            "
-          >
-            <h4
-              style="font-size: 14px; color: var(--text-secondary); margin: 0"
-            >
-              ⏰ Khung giờ học chiều:
-            </h4>
-
-            <div style="display: flex; align-items: center; gap: 8px">
-              <label for="numPeriods" style="font-size: 13px; font-weight: 600"
-                >Số ca:</label
-              >
-              <select
-                id="numPeriods"
-                style="
-                  padding: 4px 8px;
-                  border-radius: 6px;
-                  border: 1px solid var(--border-color);
-                  background: var(--bg-card);
-                  color: var(--text-primary);
-                  font-family: &quot;Mulish&quot;, sans-serif;
-                "
-              >
-                <option value="1">1 ca</option>
-                <option value="2" selected>2 ca</option>
-                <option value="3">3 ca</option>
-                <option value="4">4 ca</option>
-                <option value="5">5 ca</option>
-                <option value="6">6 ca</option>
-              </select>
-            </div>
+        <div id="optionsBox" class="collapsible-box">
+          <div class="collapsible-header" id="optionsHeader">
+            <span class="collapsible-title">⚙️ Tùy chọn</span>
+            <span class="collapsible-chevron">▼</span>
           </div>
+          <div class="collapsible-body">
+            <div class="collapsible-body-inner">
+              <div id="morningTimeBox" class="collapsible-box nested">
+                <div class="collapsible-header" id="morningTimeHeader">
+                  <span class="collapsible-title"
+                    >🌅 Khung giờ vào lớp buổi sáng</span
+                  >
+                  <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-body">
+                  <div class="collapsible-body-inner">
+                    <div
+                      style="display: flex; flex-direction: column; gap: 8px"
+                    >
+                      <div class="time-row" id="morning_time_row_0">
+                        <span class="period-label">Truy bài:</span>
+                        <input
+                          type="time"
+                          id="morning_start_0"
+                          class="time-input-sm"
+                          value="06:50"
+                        />
+                        <span class="arrow">→</span>
+                        <input
+                          type="time"
+                          id="morning_end_0"
+                          class="time-input-sm"
+                          value="07:00"
+                        />
+                      </div>
+                      <div class="time-row" id="morning_time_row_1">
+                        <span class="period-label">Tiết 1:</span>
+                        <input
+                          type="time"
+                          id="morning_start_1"
+                          class="time-input-sm"
+                          value="07:00"
+                        />
+                        <span class="arrow">→</span>
+                        <input
+                          type="time"
+                          id="morning_end_1"
+                          class="time-input-sm"
+                          value="07:45"
+                        />
+                      </div>
+                      <div class="time-row" id="morning_time_row_2">
+                        <span class="period-label">Tiết 2:</span>
+                        <input
+                          type="time"
+                          id="morning_start_2"
+                          class="time-input-sm"
+                          value="07:50"
+                        />
+                        <span class="arrow">→</span>
+                        <input
+                          type="time"
+                          id="morning_end_2"
+                          class="time-input-sm"
+                          value="08:35"
+                        />
+                      </div>
+                      <div class="time-row" id="morning_time_row_3">
+                        <span class="period-label">Tiết 3:</span>
+                        <input
+                          type="time"
+                          id="morning_start_3"
+                          class="time-input-sm"
+                          value="08:50"
+                        />
+                        <span class="arrow">→</span>
+                        <input
+                          type="time"
+                          id="morning_end_3"
+                          class="time-input-sm"
+                          value="09:35"
+                        />
+                      </div>
+                      <div class="time-row" id="morning_time_row_4">
+                        <span class="period-label">Tiết 4:</span>
+                        <input
+                          type="time"
+                          id="morning_start_4"
+                          class="time-input-sm"
+                          value="09:40"
+                        />
+                        <span class="arrow">→</span>
+                        <input
+                          type="time"
+                          id="morning_end_4"
+                          class="time-input-sm"
+                          value="10:25"
+                        />
+                      </div>
+                      <div class="time-row" id="morning_time_row_5">
+                        <span class="period-label">Tiết 5:</span>
+                        <input
+                          type="time"
+                          id="morning_start_5"
+                          class="time-input-sm"
+                          value="10:30"
+                        />
+                        <span class="arrow">→</span>
+                        <input
+                          type="time"
+                          id="morning_end_5"
+                          class="time-input-sm"
+                          value="11:15"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br />
+              <div
+                id="afternoonBox"
+                class="collapsible-box nested"
+                style="margin-top: 15px"
+              >
+                <div
+                  class="collapsible-header"
+                  id="afternoonHeaderRow"
+                  style="cursor: pointer; padding: 12px 15px"
+                >
+                  <div style="display: flex; align-items: center; gap: 10px">
+                    <label
+                      class="toggle-container"
+                      onclick="event.stopPropagation()"
+                    >
+                      <input type="checkbox" id="enableAfternoon" />
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <span
+                      class="toggle-label"
+                      style="font-weight: 600; color: var(--text-primary)"
+                      >Thêm lịch học buổi chiều</span
+                    >
+                  </div>
+                  <span class="collapsible-chevron">▼</span>
+                </div>
 
-          <div
-            style="
-              display: flex;
-              flex-direction: column;
-              gap: 8px;
-              margin-bottom: 20px;
-            "
-          >
-            <div class="time-row" id="time_row_1">
-              <span class="period-label">Ca 1:</span>
-              <input
-                type="time"
-                id="start_1"
-                class="time-input-sm"
-                value="14:00"
-              />
-              <span class="arrow">→</span>
-              <input
-                type="time"
-                id="end_1"
-                class="time-input-sm"
-                value="14:45"
-              />
-            </div>
-            <div class="time-row" id="time_row_2">
-              <span class="period-label">Ca 2:</span>
-              <input
-                type="time"
-                id="start_2"
-                class="time-input-sm"
-                value="14:50"
-              />
-              <span class="arrow">→</span>
-              <input
-                type="time"
-                id="end_2"
-                class="time-input-sm"
-                value="15:35"
-              />
-            </div>
-            <div class="time-row hidden" id="time_row_3">
-              <span class="period-label">Ca 3:</span>
-              <input
-                type="time"
-                id="start_3"
-                class="time-input-sm"
-                value="15:45"
-              />
-              <span class="arrow">→</span>
-              <input
-                type="time"
-                id="end_3"
-                class="time-input-sm"
-                value="16:30"
-              />
-            </div>
-            <div class="time-row hidden" id="time_row_4">
-              <span class="period-label">Ca 4:</span>
-              <input
-                type="time"
-                id="start_4"
-                class="time-input-sm"
-                value="16:35"
-              />
-              <span class="arrow">→</span>
-              <input
-                type="time"
-                id="end_4"
-                class="time-input-sm"
-                value="17:20"
-              />
-            </div>
-            <div class="time-row hidden" id="time_row_5">
-              <span class="period-label">Ca 5:</span>
-              <input
-                type="time"
-                id="start_5"
-                class="time-input-sm"
-                value="17:25"
-              />
-              <span class="arrow">→</span>
-              <input
-                type="time"
-                id="end_5"
-                class="time-input-sm"
-                value="18:10"
-              />
-            </div>
-            <div class="time-row hidden" id="time_row_6">
-              <span class="period-label">Ca 6:</span>
-              <input
-                type="time"
-                id="start_6"
-                class="time-input-sm"
-                value="18:15"
-              />
-              <span class="arrow">→</span>
-              <input
-                type="time"
-                id="end_6"
-                class="time-input-sm"
-                value="19:00"
-              />
-            </div>
-          </div>
+                <div id="afternoonSetup" class="collapsible-body">
+                  <div class="collapsible-body-inner" style="text-align: left">
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 15px;
+                      "
+                    >
+                      <h4
+                        style="
+                          font-size: 14px;
+                          color: var(--text-secondary);
+                          margin: 0;
+                        "
+                      >
+                        ⏰ Khung giờ học chiều:
+                      </h4>
+                      <div style="display: flex; align-items: center; gap: 8px">
+                        <label
+                          for="numPeriods"
+                          style="font-size: 13px; font-weight: 600"
+                          >Số ca:</label
+                        >
+                        <select
+                          id="numPeriods"
+                          style="
+                            padding: 4px 8px;
+                            border-radius: 6px;
+                            border: 1px solid var(--border-color);
+                            background: var(--bg-card);
+                            color: var(--text-primary);
+                            font-family: &quot;Mulish&quot;, sans-serif;
+                          "
+                        >
+                          <option value="1">1 ca</option>
+                          <option value="2" selected>2 ca</option>
+                          <option value="3">3 ca</option>
+                          <option value="4">4 ca</option>
+                          <option value="5">5 ca</option>
+                          <option value="6">6 ca</option>
+                        </select>
+                      </div>
+                    </div>
 
-          <h4
-            style="
-              margin-bottom: 10px;
-              font-size: 14px;
-              color: var(--text-secondary);
-            "
-          >
-            📚 Nhập môn học (Để trống nếu ca đó không học):
-          </h4>
-          <div style="display: flex; flex-direction: column; gap: 8px">
-            <div class="day-row">
-              <span>Thứ 2:</span>
-              <div class="day-inputs" id="aft_container_2"></div>
-            </div>
-            <div class="day-row">
-              <span>Thứ 3:</span>
-              <div class="day-inputs" id="aft_container_3"></div>
-            </div>
-            <div class="day-row">
-              <span>Thứ 4:</span>
-              <div class="day-inputs" id="aft_container_4"></div>
-            </div>
-            <div class="day-row">
-              <span>Thứ 5:</span>
-              <div class="day-inputs" id="aft_container_5"></div>
-            </div>
-            <div class="day-row">
-              <span>Thứ 6:</span>
-              <div class="day-inputs" id="aft_container_6"></div>
-            </div>
-            <div class="day-row">
-              <span>Thứ 7:</span>
-              <div class="day-inputs" id="aft_container_7"></div>
+                    <div
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 8px;
+                        margin-bottom: 20px;
+                      "
+                    >
+                      <div class="time-row" id="time_row_1">
+                        <span class="period-label">Ca 1:</span
+                        ><input
+                          type="time"
+                          id="start_1"
+                          class="time-input-sm"
+                          value="14:00"
+                        /><span class="arrow">→</span
+                        ><input
+                          type="time"
+                          id="end_1"
+                          class="time-input-sm"
+                          value="14:45"
+                        />
+                      </div>
+                      <div class="time-row" id="time_row_2">
+                        <span class="period-label">Ca 2:</span
+                        ><input
+                          type="time"
+                          id="start_2"
+                          class="time-input-sm"
+                          value="14:50"
+                        /><span class="arrow">→</span
+                        ><input
+                          type="time"
+                          id="end_2"
+                          class="time-input-sm"
+                          value="15:35"
+                        />
+                      </div>
+                      <div class="time-row hidden" id="time_row_3">
+                        <span class="period-label">Ca 3:</span
+                        ><input
+                          type="time"
+                          id="start_3"
+                          class="time-input-sm"
+                          value="15:45"
+                        /><span class="arrow">→</span
+                        ><input
+                          type="time"
+                          id="end_3"
+                          class="time-input-sm"
+                          value="16:30"
+                        />
+                      </div>
+                      <div class="time-row hidden" id="time_row_4">
+                        <span class="period-label">Ca 4:</span
+                        ><input
+                          type="time"
+                          id="start_4"
+                          class="time-input-sm"
+                          value="16:35"
+                        /><span class="arrow">→</span
+                        ><input
+                          type="time"
+                          id="end_4"
+                          class="time-input-sm"
+                          value="17:20"
+                        />
+                      </div>
+                      <div class="time-row hidden" id="time_row_5">
+                        <span class="period-label">Ca 5:</span
+                        ><input
+                          type="time"
+                          id="start_5"
+                          class="time-input-sm"
+                          value="17:25"
+                        /><span class="arrow">→</span
+                        ><input
+                          type="time"
+                          id="end_5"
+                          class="time-input-sm"
+                          value="18:10"
+                        />
+                      </div>
+                      <div class="time-row hidden" id="time_row_6">
+                        <span class="period-label">Ca 6:</span
+                        ><input
+                          type="time"
+                          id="start_6"
+                          class="time-input-sm"
+                          value="18:15"
+                        /><span class="arrow">→</span
+                        ><input
+                          type="time"
+                          id="end_6"
+                          class="time-input-sm"
+                          value="19:00"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="aft-actions-row">
+                      <h4
+                        style="
+                          font-size: 14px;
+                          color: var(--text-secondary);
+                          margin: 0;
+                        "
+                      >
+                        📚 Nhập môn học (Để trống nếu ca đó không học):
+                      </h4>
+                      <div
+                        style="display: flex; align-items: center; gap: 12px"
+                      >
+                        <label class="checkbox-inline">
+                          <input
+                            type="checkbox"
+                            id="overrideAfternoonCheckbox"
+                          />
+                          Ghi đè lên lịch chiều
+                        </label>
+                        <button
+                          type="button"
+                          id="clearAfternoonBtn"
+                          class="btn btn-action-small"
+                          style="padding: 4px 8px; font-size: 12px"
+                        >
+                          🗑️ Xóa trắng
+                        </button>
+                      </div>
+                    </div>
+
+                    <div
+                      style="display: flex; flex-direction: column; gap: 8px"
+                    >
+                      <div class="day-row">
+                        <span>Thứ 2:</span>
+                        <div class="day-inputs" id="aft_container_2"></div>
+                      </div>
+                      <div class="day-row">
+                        <span>Thứ 3:</span>
+                        <div class="day-inputs" id="aft_container_3"></div>
+                      </div>
+                      <div class="day-row">
+                        <span>Thứ 4:</span>
+                        <div class="day-inputs" id="aft_container_4"></div>
+                      </div>
+                      <div class="day-row">
+                        <span>Thứ 5:</span>
+                        <div class="day-inputs" id="aft_container_5"></div>
+                      </div>
+                      <div class="day-row">
+                        <span>Thứ 6:</span>
+                        <div class="day-inputs" id="aft_container_6"></div>
+                      </div>
+                      <div class="day-row">
+                        <span>Thứ 7:</span>
+                        <div class="day-inputs" id="aft_container_7"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -446,6 +605,37 @@
         >
           Đã hiểu
         </button>
+      </div>
+    </div>
+
+    <div id="overrideWarningModal" class="lightbox-overlay">
+      <div
+        class="modal-content card"
+        style="
+          max-width: 500px;
+          width: 90%;
+          text-align: center;
+          position: relative;
+        "
+      >
+        <h3 style="margin-bottom: 15px; color: var(--accent-color)">
+          ⚠️ Lưu ý về Ghi đè lịch chiều
+        </h3>
+        <p class="override-warning-text">
+          <strong>Ghi đè lịch chiều</strong> cho phép bạn thay thế lịch chiều có
+          trong file TKB tổng bằng lịch chiều của mình. Tính năng này sẽ được
+          mặc định bật khi bạn vào lại trang cho đến khi tính năng này được tắt
+          (bỏ tích).
+        </p>
+        <div class="override-modal-footer">
+          <label class="checkbox-inline">
+            <input type="checkbox" id="dontShowOverrideNoticeAgain" />
+            Không hiện thông báo này nữa
+          </label>
+          <button id="confirmOverrideBtn" class="btn btn-primary">
+            Đã hiểu
+          </button>
+        </div>
       </div>
     </div>
 

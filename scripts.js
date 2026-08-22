@@ -44,6 +44,52 @@ themeInputs.forEach((input) => {
   });
 });
 
+function initCollapsibleBox(
+  boxEl,
+  { persistKey = null, defaultExpanded = false } = {},
+) {
+  if (!boxEl) return null;
+  const header = boxEl.querySelector(":scope > .collapsible-header");
+  if (!header) return null;
+
+  function setExpanded(expanded, { save = true } = {}) {
+    boxEl.classList.toggle("expanded", expanded);
+    if (save && persistKey) {
+      localStorage.setItem(persistKey, expanded ? "1" : "0");
+    }
+  }
+
+  let initial = defaultExpanded;
+  if (persistKey) {
+    const saved = localStorage.getItem(persistKey);
+    if (saved !== null) initial = saved === "1";
+  }
+  setExpanded(initial, { save: false });
+
+  header.addEventListener("click", () => {
+    const isExpanded = boxEl.classList.contains("expanded");
+    setExpanded(!isExpanded);
+  });
+
+  return { setExpanded };
+}
+
+const OPTIONS_VISITED_KEY = "tkb_options_visited";
+const isFirstVisit = localStorage.getItem(OPTIONS_VISITED_KEY) !== "true";
+localStorage.setItem(OPTIONS_VISITED_KEY, "true");
+
+const optionsBox = document.getElementById("optionsBox");
+const optionsBoxController = initCollapsibleBox(optionsBox, {
+  persistKey: isFirstVisit ? null : "tkb_options_collapsed_expanded",
+  defaultExpanded: false,
+});
+
+const morningTimeBox = document.getElementById("morningTimeBox");
+initCollapsibleBox(morningTimeBox, {
+  persistKey: "tkb_morning_box_expanded",
+  defaultExpanded: false,
+});
+
 const fileInput = document.getElementById("pdfFile");
 const dropZone = document.getElementById("dropZone");
 const fileNameDisplay = document.getElementById("fileNameDisplay");
@@ -80,7 +126,59 @@ dropZone.addEventListener("drop", (e) => {
 const enableAfternoon = document.getElementById("enableAfternoon");
 const afternoonSetup = document.getElementById("afternoonSetup");
 const numPeriodsSelect = document.getElementById("numPeriods");
+const afternoonBox = document.getElementById("afternoonBox");
+const afternoonHeaderRow = document.getElementById("afternoonHeaderRow");
 const STORAGE_KEY = isTeacherMode ? "tkb_saved_data_teacher" : "tkb_saved_data";
+
+function updateAfternoonVisibility() {
+  if (!enableAfternoon.checked) {
+    afternoonBox.classList.remove("expanded");
+    return;
+  }
+  if (afternoonManuallyCollapsed) {
+    afternoonBox.classList.remove("expanded");
+  } else {
+    afternoonBox.classList.add("expanded");
+  }
+}
+
+if (afternoonHeaderRow) {
+  afternoonHeaderRow.addEventListener("click", () => {
+    if (enableAfternoon.disabled) return;
+
+    if (!enableAfternoon.checked) {
+      enableAfternoon.checked = true;
+      afternoonManuallyCollapsed = false;
+    } else {
+      afternoonManuallyCollapsed = !afternoonManuallyCollapsed;
+    }
+    updateAfternoonVisibility();
+    saveLocalData();
+  });
+}
+
+const DEFAULT_MORNING_TIMES = [
+  { start: "06:50", end: "07:00" },
+  { start: "07:00", end: "07:45" },
+  { start: "07:50", end: "08:35" },
+  { start: "08:50", end: "09:35" },
+  { start: "09:40", end: "10:25" },
+  { start: "10:30", end: "11:15" },
+];
+
+function getMorningTimesPayload() {
+  const times = [];
+  for (let i = 0; i <= 5; i++) {
+    const startEl = document.getElementById(`morning_start_${i}`);
+    const endEl = document.getElementById(`morning_end_${i}`);
+    const start =
+      startEl && startEl.value ? startEl.value : DEFAULT_MORNING_TIMES[i].start;
+    const end =
+      endEl && endEl.value ? endEl.value : DEFAULT_MORNING_TIMES[i].end;
+    times.push(`${start} → ${end}`);
+  }
+  return times;
+}
 
 function renderAfternoonInputs(numPeriods) {
   for (let day = 2; day <= 7; day++) {
@@ -114,15 +212,24 @@ function renderAfternoonInputs(numPeriods) {
 function saveLocalData() {
   const tkbData = {
     enabled: enableAfternoon.checked,
+    afternoonCollapsed: afternoonManuallyCollapsed,
     numPeriods: numPeriodsSelect.value,
     targetName: classInput.value,
     times: {},
     subjects: {},
+    morningTimes: {},
   };
 
   for (let i = 1; i <= 6; i++) {
     tkbData.times[`start_${i}`] = document.getElementById(`start_${i}`).value;
     tkbData.times[`end_${i}`] = document.getElementById(`end_${i}`).value;
+  }
+
+  for (let i = 0; i <= 5; i++) {
+    const startEl = document.getElementById(`morning_start_${i}`);
+    const endEl = document.getElementById(`morning_end_${i}`);
+    if (startEl) tkbData.morningTimes[`morning_start_${i}`] = startEl.value;
+    if (endEl) tkbData.morningTimes[`morning_end_${i}`] = endEl.value;
   }
 
   for (let day = 2; day <= 7; day++) {
@@ -137,8 +244,8 @@ function saveLocalData() {
 }
 
 enableAfternoon.addEventListener("change", (e) => {
-  if (e.target.checked) afternoonSetup.classList.remove("hidden");
-  else afternoonSetup.classList.add("hidden");
+  if (e.target.checked) afternoonManuallyCollapsed = false;
+  updateAfternoonVisibility();
   saveLocalData();
 });
 
@@ -164,8 +271,21 @@ function loadLocalData() {
       classInput.value = tkbData.targetName;
     }
     enableAfternoon.checked = tkbData.enabled;
-    if (tkbData.enabled) afternoonSetup.classList.remove("hidden");
-    else afternoonSetup.classList.add("hidden");
+    afternoonManuallyCollapsed = !!tkbData.afternoonCollapsed;
+    updateAfternoonVisibility();
+
+    if (tkbData.morningTimes) {
+      for (let i = 0; i <= 5; i++) {
+        const startEl = document.getElementById(`morning_start_${i}`);
+        const endEl = document.getElementById(`morning_end_${i}`);
+        if (startEl && tkbData.morningTimes[`morning_start_${i}`]) {
+          startEl.value = tkbData.morningTimes[`morning_start_${i}`];
+        }
+        if (endEl && tkbData.morningTimes[`morning_end_${i}`]) {
+          endEl.value = tkbData.morningTimes[`morning_end_${i}`];
+        }
+      }
+    }
 
     numPeriodsSelect.value = tkbData.numPeriods;
     const selectedNum = parseInt(tkbData.numPeriods);
@@ -194,11 +314,26 @@ function loadLocalData() {
       }
     }
   } else {
+    enableAfternoon.checked = true;
+    afternoonManuallyCollapsed = false;
+    updateAfternoonVisibility();
     renderAfternoonInputs(2);
   }
 }
 
 loadLocalData();
+
+const clearAfternoonBtn = document.getElementById("clearAfternoonBtn");
+if (clearAfternoonBtn) {
+  clearAfternoonBtn.addEventListener("click", () => {
+    const textareas = document.querySelectorAll(
+      ".day-inputs textarea, .day-inputs input",
+    );
+    textareas.forEach((ta) => (ta.value = ""));
+    saveLocalData();
+  });
+}
+
 const noticeModal = document.getElementById("devNoticeModal");
 const dismissBtn = document.getElementById("dismissNoticeBtn");
 if (noticeModal && dismissBtn) {
@@ -212,14 +347,77 @@ if (noticeModal && dismissBtn) {
   });
 }
 
+const OVERRIDE_STATE_KEY = "tkb_override_afternoon";
+const OVERRIDE_NOTICE_DISMISSED_KEY = "tkb_override_notice_dismissed";
+const overrideAfternoonCheckbox = document.getElementById(
+  "overrideAfternoonCheckbox",
+);
+const overrideWarningModal = document.getElementById("overrideWarningModal");
+const confirmOverrideBtn = document.getElementById("confirmOverrideBtn");
+const dontShowOverrideNoticeAgain = document.getElementById(
+  "dontShowOverrideNoticeAgain",
+);
+const aftTimeSectionEl = document.getElementById("aftTimeSection");
+const aftSubjectsSectionEl = document.getElementById("aftSubjectsSection");
+
+function applyOverrideUnlock(checked) {
+  if (checked) {
+    enableAfternoon.disabled = false;
+    if (!enableAfternoon.checked) {
+      enableAfternoon.checked = true;
+      afternoonManuallyCollapsed = false;
+      updateAfternoonVisibility();
+    }
+    if (aftTimeSectionEl) aftTimeSectionEl.classList.remove("hidden");
+    if (aftSubjectsSectionEl) aftSubjectsSectionEl.classList.remove("hidden");
+  }
+}
+
+if (overrideAfternoonCheckbox) {
+  const savedOverride = localStorage.getItem(OVERRIDE_STATE_KEY) === "true";
+  overrideAfternoonCheckbox.checked = savedOverride;
+  applyOverrideUnlock(savedOverride);
+
+  overrideAfternoonCheckbox.addEventListener("change", (e) => {
+    const checked = e.target.checked;
+    localStorage.setItem(OVERRIDE_STATE_KEY, checked ? "true" : "false");
+
+    if (checked) {
+      applyOverrideUnlock(true);
+      const noticeDismissed =
+        localStorage.getItem(OVERRIDE_NOTICE_DISMISSED_KEY) === "true";
+      if (!noticeDismissed && overrideWarningModal) {
+        overrideWarningModal.classList.add("active");
+      }
+    }
+    saveLocalData();
+  });
+}
+
+if (confirmOverrideBtn && overrideWarningModal) {
+  confirmOverrideBtn.addEventListener("click", () => {
+    if (dontShowOverrideNoticeAgain && dontShowOverrideNoticeAgain.checked) {
+      localStorage.setItem(OVERRIDE_NOTICE_DISMISSED_KEY, "true");
+    }
+    overrideWarningModal.classList.remove("active");
+  });
+}
+
 fileInput.addEventListener("change", async () => {
   if (fileInput.files.length > 0) {
+    if (isFirstVisit && optionsBoxController) {
+      optionsBoxController.setExpanded(true, { save: false });
+    }
+
     const file = fileInput.files[0];
-    const validExts = ["pdf", "xlsx", "xls", "csv"];
     const ext = file.name.split(".").pop().toLowerCase();
+    const validExts = isTeacherMode ? ["xlsx", "xls", "csv"] : ["pdf"];
 
     if (!validExts.includes(ext)) {
-      alert("Lỗi: Vui lòng chỉ chọn tệp định dạng PDF, XLSX hoặc CSV!");
+      const errorMsg = isTeacherMode
+        ? "Lỗi: Bản giáo viên chỉ hỗ trợ tệp định dạng Excel (.xlsx, .xls, .csv)!"
+        : "Lỗi: Bản học sinh chỉ hỗ trợ tệp định dạng .PDF!";
+      alert(errorMsg);
       resetFileInput();
       return;
     }
@@ -249,6 +447,7 @@ fileInput.addEventListener("change", async () => {
 
         if (response.ok && data.teachers) {
           cachedFileId = data.file_id;
+          window.teacherKeywords = data.teachers;
           const dataList = document.getElementById("teacherList");
           dataList.innerHTML = "";
           data.teachers.forEach((t) => {
@@ -273,16 +472,24 @@ fileInput.addEventListener("change", async () => {
               enableAfternoon.disabled = true;
 
               if (!has_time) {
-                afternoonSetup.classList.remove("hidden");
+                afternoonManuallyCollapsed = false;
                 if (aftTimeSec) aftTimeSec.classList.remove("hidden");
                 if (aftSubjSec) aftSubjSec.classList.add("hidden");
               } else {
-                afternoonSetup.classList.add("hidden");
+                afternoonManuallyCollapsed = true;
               }
+              updateAfternoonVisibility();
             } else {
               enableAfternoon.disabled = false;
               if (aftTimeSec) aftTimeSec.classList.remove("hidden");
               if (aftSubjSec) aftSubjSec.classList.remove("hidden");
+            }
+
+            if (
+              overrideAfternoonCheckbox &&
+              overrideAfternoonCheckbox.checked
+            ) {
+              applyOverrideUnlock(true);
             }
           }
         } else {
@@ -363,6 +570,12 @@ uploadBtn.addEventListener("click", async () => {
     formData.append("file", fileInput.files[0]);
   }
 
+  formData.append("morning_times", JSON.stringify(getMorningTimesPayload()));
+  const isOverride = overrideAfternoonCheckbox
+    ? overrideAfternoonCheckbox.checked
+    : false;
+  formData.append("override_afternoon", isOverride);
+
   if (enableAfternoon.checked && !enableAfternoon.disabled) {
     const numPeriods = parseInt(document.getElementById("numPeriods").value);
     const timesArray = [];
@@ -384,11 +597,9 @@ uploadBtn.addEventListener("click", async () => {
       }
       afternoonData.schedule[day] = daySubjects;
     }
-    
+
     formData.append("afternoon_data", JSON.stringify(afternoonData));
-    
   } else if (enableAfternoon.checked && enableAfternoon.disabled) {
-    
     const aftTimeSec = document.getElementById("aftTimeSection");
 
     if (aftTimeSec && !aftTimeSec.classList.contains("hidden")) {
@@ -414,7 +625,7 @@ uploadBtn.addEventListener("click", async () => {
   const loadingSub = document.querySelector(".loading-sub");
   const coldStartTimer = setTimeout(() => {
     loadingSub.innerText =
-      "Máy chủ đang khởi động (có thể mất 30s - 1 phút). Vui lòng đợi và KHÔNG tắt trang...";
+      "Hệ thống AI đang phân tích cấu trúc lịch của trường bạn, vui lòng đợi thêm chút nhé...";
     loadingSub.style.color = "var(--accent-color)";
     loadingSub.style.fontWeight = "bold";
   }, 25000);

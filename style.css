@@ -556,7 +556,7 @@ body {
 }
 
 .lightbox-overlay {
-  display: none;
+  display: flex;
   position: fixed;
   inset: 0;
   background: var(--overlay-bg);
@@ -565,9 +565,20 @@ body {
   justify-content: center;
   overflow: hidden;
   touch-action: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.28s ease,
+    visibility 0s linear 0.28s;
 }
 .lightbox-overlay.active {
-  display: flex;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity 0.28s ease,
+    visibility 0s linear 0s;
 }
 .lightbox-img {
   max-width: 90vw;
@@ -854,4 +865,167 @@ input[type="file"].form-control {
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-color);
   z-index: 2002;
+  opacity: 0;
+  transform: scale(0.9) translateY(12px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.lightbox-overlay.active .modal-content {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.collapsible-box {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  cursor: pointer;
+  background: var(--bg-input);
+  user-select: none;
+}
+
+.collapsible-header .collapsible-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.collapsible-chevron {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-secondary);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.collapsible-box.expanded > .collapsible-header .collapsible-chevron {
+  transform: rotate(180deg);
+}
+
+.collapsible-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.collapsible-box.expanded > .collapsible-body {
+  grid-template-rows: 1fr;
+}
+
+.collapsible-body > .collapsible-body-inner {
+  overflow: hidden;
+  min-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s;
+}
+
+.collapsible-box.expanded > .collapsible-body > .collapsible-body-inner {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.35s ease 0.1s, visibility 0s;
+}
+
+.collapsible-body-inner {
+  padding: 0 15px; 
+}
+
+.collapsible-body-inner::before {
+  content: "";
+  display: block;
+  height: 15px;
+  margin: 0 -15px;
+  border-top: 1px solid var(--border-color);
+}
+
+.collapsible-body-inner::after {
+  content: "";
+  display: block;
+  height: 15px;
+}
+
+.collapsible-box.nested > .collapsible-body > .collapsible-body-inner {
+  padding: 0 15px;
+  background: transparent;
+}
+
+.afternoon-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.collapse-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition:
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.2s ease;
+  flex-shrink: 0;
+}
+.collapse-icon-btn:hover {
+  background: var(--bg-input);
+}
+.collapse-icon-btn.expanded {
+  transform: rotate(180deg);
+}
+
+.checkbox-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  user-select: none;
+}
+.checkbox-inline input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-color);
+  cursor: pointer;
+}
+
+.aft-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.override-warning-text {
+  margin-bottom: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+.override-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
 }
