@@ -314,7 +314,7 @@ function loadLocalData() {
       }
     }
   } else {
-    enableAfternoon.checked = true;
+    enableAfternoon.checked = false;
     afternoonManuallyCollapsed = false;
     updateAfternoonVisibility();
     renderAfternoonInputs(2);
