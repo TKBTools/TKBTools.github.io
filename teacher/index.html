@@ -183,7 +183,7 @@
                       document.write(`<div class="m-cell m-time-cell m-sticky-left m-sticky-col-2"><button type="button" class="time-btn" data-time-id="morning_${i}">${morningTimes[i - 1]}</button></div>`);
                       for (let d = 2; d <= 8; d++) {
                         document.write(`<div class="m-cell col-day" data-col="${d}">
-                          <textarea class="matrix-input morn-input" data-day="${d}" data-period="${i}" disabled></textarea>
+                          <textarea class="matrix-input morn-input" data-day="${d}" data-period="${i}"></textarea>
                         </div>`);
                       }
                       document.write(`</div>`);
@@ -204,7 +204,7 @@
                       document.write(`<div class="m-cell m-time-cell m-sticky-left m-sticky-col-2"><button type="button" class="time-btn" data-time-id="afternoon_${i}">${aftTimes[i - 1]}</button></div>`);
                       for (let d = 2; d <= 8; d++) {
                         document.write(`<div class="m-cell col-day" data-col="${d}">
-                          <textarea class="matrix-input aft-input" data-day="${d}" data-period="${i}" disabled></textarea>
+                          <textarea class="matrix-input aft-input" data-day="${d}" data-period="${i}"></textarea>
                         </div>`);
                       }
                       document.write(`</div>`);

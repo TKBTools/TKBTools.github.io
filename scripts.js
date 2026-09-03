@@ -143,34 +143,18 @@ function updateMatrixView() {
   if (btnPlusPeriod) btnPlusPeriod.disabled = currentAfternoonPeriods >= 8;
 }
 
-function applyOverrideState() {
-  if (!overrideScheduleCheckbox) return;
-  const isOverride = overrideScheduleCheckbox.checked;
-
-  document.querySelectorAll(".morn-input").forEach((input) => {
-    const day = parseInt(input.dataset.day);
-    if (!isOverride) {
-      input.disabled = day !== 8;
-    } else {
-      input.disabled = false;
+if (clearScheduleBtn) {
+  clearScheduleBtn.addEventListener("click", () => {
+    if (
+      confirm(
+        "Bạn có chắc chắn muốn xóa toàn bộ dữ liệu bạn đã tự nhập trong bảng này không?",
+      )
+    ) {
+      document.querySelectorAll(".matrix-input").forEach((input) => {
+        input.value = "";
+      });
+      saveLocalData();
     }
-  });
-
-  document.querySelectorAll(".aft-input").forEach((input) => {
-    input.disabled = !isOverride;
-  });
-}
-
-if (overrideScheduleCheckbox) {
-  overrideScheduleCheckbox.addEventListener("change", (e) => {
-    applyOverrideState();
-    if (e.target.checked) {
-      const noticeDismissed =
-        localStorage.getItem(OVERRIDE_NOTICE_DISMISSED_KEY) === "true";
-      if (!noticeDismissed && overrideWarningModal)
-        overrideWarningModal.classList.add("active");
-    }
-    saveLocalData();
   });
 }
 
@@ -320,7 +304,6 @@ function loadLocalData() {
     if (overrideScheduleCheckbox) overrideScheduleCheckbox.checked = false;
   }
   updateMatrixView();
-  applyOverrideState();
 }
 loadLocalData();
 
