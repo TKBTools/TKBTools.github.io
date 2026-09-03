@@ -35,7 +35,6 @@ if (savedTheme === "dark") {
   lightInput.checked = true;
   htmlElement.setAttribute("data-theme", "light");
 }
-
 themeInputs.forEach((input) => {
   input.addEventListener("change", (e) => {
     const val = e.target.value;
@@ -44,51 +43,24 @@ themeInputs.forEach((input) => {
   });
 });
 
-function initCollapsibleBox(
-  boxEl,
-  { persistKey = null, defaultExpanded = false } = {},
-) {
-  if (!boxEl) return null;
-  const header = boxEl.querySelector(":scope > .collapsible-header");
-  if (!header) return null;
-
-  function setExpanded(expanded, { save = true } = {}) {
-    boxEl.classList.toggle("expanded", expanded);
-    if (save && persistKey) {
-      localStorage.setItem(persistKey, expanded ? "1" : "0");
-    }
-  }
-
-  let initial = defaultExpanded;
-  if (persistKey) {
-    const saved = localStorage.getItem(persistKey);
-    if (saved !== null) initial = saved === "1";
-  }
-  setExpanded(initial, { save: false });
-
-  header.addEventListener("click", () => {
-    const isExpanded = boxEl.classList.contains("expanded");
-    setExpanded(!isExpanded);
-  });
-
-  return { setExpanded };
-}
-
 const OPTIONS_VISITED_KEY = "tkb_options_visited";
 const isFirstVisit = localStorage.getItem(OPTIONS_VISITED_KEY) !== "true";
 localStorage.setItem(OPTIONS_VISITED_KEY, "true");
 
 const optionsBox = document.getElementById("optionsBox");
-const optionsBoxController = initCollapsibleBox(optionsBox, {
-  persistKey: isFirstVisit ? null : "tkb_options_collapsed_expanded",
-  defaultExpanded: false,
-});
+const optionsHeader = document.getElementById("optionsHeader");
+if (optionsBox && optionsHeader) {
+  let isExpanded = isFirstVisit
+    ? true
+    : localStorage.getItem("tkb_options_expanded") === "1";
+  optionsBox.classList.toggle("expanded", isExpanded);
 
-const morningTimeBox = document.getElementById("morningTimeBox");
-initCollapsibleBox(morningTimeBox, {
-  persistKey: "tkb_morning_box_expanded",
-  defaultExpanded: false,
-});
+  optionsHeader.addEventListener("click", () => {
+    isExpanded = !optionsBox.classList.contains("expanded");
+    optionsBox.classList.toggle("expanded", isExpanded);
+    localStorage.setItem("tkb_options_expanded", isExpanded ? "1" : "0");
+  });
+}
 
 const fileInput = document.getElementById("pdfFile");
 const dropZone = document.getElementById("dropZone");
@@ -103,17 +75,14 @@ const loadingBox = document.getElementById("loadingBox");
 const resultCard = document.getElementById("resultCard");
 
 dropZone.addEventListener("click", () => fileInput.click());
-
 dropZone.addEventListener("dragover", (e) => {
   e.preventDefault();
   dropZone.classList.add("dragover");
 });
-
 dropZone.addEventListener("dragleave", (e) => {
   e.preventDefault();
   dropZone.classList.remove("dragover");
 });
-
 dropZone.addEventListener("drop", (e) => {
   e.preventDefault();
   dropZone.classList.remove("dragover");
@@ -123,272 +92,83 @@ dropZone.addEventListener("drop", (e) => {
   }
 });
 
-const enableAfternoon = document.getElementById("enableAfternoon");
-const afternoonSetup = document.getElementById("afternoonSetup");
-const numPeriodsSelect = document.getElementById("numPeriods");
-const afternoonBox = document.getElementById("afternoonBox");
-const afternoonHeaderRow = document.getElementById("afternoonHeaderRow");
 const STORAGE_KEY = isTeacherMode ? "tkb_saved_data_teacher" : "tkb_saved_data";
 
-function updateAfternoonVisibility() {
-  if (!enableAfternoon.checked) {
-    afternoonBox.classList.remove("expanded");
-    return;
-  }
-  if (afternoonManuallyCollapsed) {
-    afternoonBox.classList.remove("expanded");
-  } else {
-    afternoonBox.classList.add("expanded");
-  }
-}
+let currentMaxDay = 7;
+let currentAfternoonPeriods = 2;
+let currentTimeTarget = null;
 
-if (afternoonHeaderRow) {
-  afternoonHeaderRow.addEventListener("click", () => {
-    if (enableAfternoon.disabled) return;
-
-    if (!enableAfternoon.checked) {
-      enableAfternoon.checked = true;
-      afternoonManuallyCollapsed = false;
-    } else {
-      afternoonManuallyCollapsed = !afternoonManuallyCollapsed;
-    }
-    updateAfternoonVisibility();
-    saveLocalData();
-  });
-}
-
-const DEFAULT_MORNING_TIMES = [
-  { start: "06:50", end: "07:00" },
-  { start: "07:00", end: "07:45" },
-  { start: "07:50", end: "08:35" },
-  { start: "08:50", end: "09:35" },
-  { start: "09:40", end: "10:25" },
-  { start: "10:30", end: "11:15" },
-];
-
-function getMorningTimesPayload() {
-  const times = [];
-  for (let i = 0; i <= 5; i++) {
-    const startEl = document.getElementById(`morning_start_${i}`);
-    const endEl = document.getElementById(`morning_end_${i}`);
-    const start =
-      startEl && startEl.value ? startEl.value : DEFAULT_MORNING_TIMES[i].start;
-    const end =
-      endEl && endEl.value ? endEl.value : DEFAULT_MORNING_TIMES[i].end;
-    times.push(`${start} → ${end}`);
-  }
-  return times;
-}
-
-function renderAfternoonInputs(numPeriods) {
-  for (let day = 2; day <= 7; day++) {
-    const container = document.getElementById(`aft_container_${day}`);
-    if (!container) continue;
-
-    const existingValues = [];
-    for (let i = 1; i <= 6; i++) {
-      const input = document.getElementById(`aft_${day}_${i}`);
-      existingValues.push(input ? input.value : "");
-    }
-
-    container.innerHTML = "";
-    for (let i = 1; i <= numPeriods; i++) {
-      const input = document.createElement("textarea");
-      input.rows = 1;
-      input.id = `aft_${day}_${i}`;
-
-      if (numPeriods === 1) {
-        input.placeholder = isTeacherMode ? "Ví dụ: 10A1" : "Ví dụ: Toán";
-      } else {
-        input.placeholder = `Ca ${i}`;
-      }
-
-      input.value = existingValues[i - 1] || "";
-      container.appendChild(input);
-    }
-  }
-}
-
-function saveLocalData() {
-  const tkbData = {
-    enabled: enableAfternoon.checked,
-    afternoonCollapsed: afternoonManuallyCollapsed,
-    numPeriods: numPeriodsSelect.value,
-    targetName: classInput.value,
-    times: {},
-    subjects: {},
-    morningTimes: {},
-  };
-
-  for (let i = 1; i <= 6; i++) {
-    tkbData.times[`start_${i}`] = document.getElementById(`start_${i}`).value;
-    tkbData.times[`end_${i}`] = document.getElementById(`end_${i}`).value;
-  }
-
-  for (let i = 0; i <= 5; i++) {
-    const startEl = document.getElementById(`morning_start_${i}`);
-    const endEl = document.getElementById(`morning_end_${i}`);
-    if (startEl) tkbData.morningTimes[`morning_start_${i}`] = startEl.value;
-    if (endEl) tkbData.morningTimes[`morning_end_${i}`] = endEl.value;
-  }
-
-  for (let day = 2; day <= 7; day++) {
-    for (let p = 1; p <= 6; p++) {
-      const el = document.getElementById(`aft_${day}_${p}`);
-      if (el) {
-        tkbData.subjects[`aft_${day}_${p}`] = el.value;
-      }
-    }
-  }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tkbData));
-}
-
-enableAfternoon.addEventListener("change", (e) => {
-  if (e.target.checked) afternoonManuallyCollapsed = false;
-  updateAfternoonVisibility();
-  saveLocalData();
-});
-
-numPeriodsSelect.addEventListener("change", (e) => {
-  const selectedNum = parseInt(e.target.value);
-  for (let i = 1; i <= 6; i++) {
-    const row = document.getElementById(`time_row_${i}`);
-    if (i <= selectedNum) row.classList.remove("hidden");
-    else row.classList.add("hidden");
-  }
-  renderAfternoonInputs(selectedNum);
-  saveLocalData();
-});
-
-afternoonSetup.addEventListener("input", saveLocalData);
-classInput.addEventListener("input", saveLocalData);
-
-function loadLocalData() {
-  const savedData = localStorage.getItem(STORAGE_KEY);
-  if (savedData) {
-    const tkbData = JSON.parse(savedData);
-    if (tkbData.targetName) {
-      classInput.value = tkbData.targetName;
-    }
-    enableAfternoon.checked = tkbData.enabled;
-    afternoonManuallyCollapsed = !!tkbData.afternoonCollapsed;
-    updateAfternoonVisibility();
-
-    if (tkbData.morningTimes) {
-      for (let i = 0; i <= 5; i++) {
-        const startEl = document.getElementById(`morning_start_${i}`);
-        const endEl = document.getElementById(`morning_end_${i}`);
-        if (startEl && tkbData.morningTimes[`morning_start_${i}`]) {
-          startEl.value = tkbData.morningTimes[`morning_start_${i}`];
-        }
-        if (endEl && tkbData.morningTimes[`morning_end_${i}`]) {
-          endEl.value = tkbData.morningTimes[`morning_end_${i}`];
-        }
-      }
-    }
-
-    numPeriodsSelect.value = tkbData.numPeriods;
-    const selectedNum = parseInt(tkbData.numPeriods);
-    for (let i = 1; i <= 6; i++) {
-      const row = document.getElementById(`time_row_${i}`);
-      if (i <= selectedNum) row.classList.remove("hidden");
-      else row.classList.add("hidden");
-    }
-
-    renderAfternoonInputs(selectedNum);
-
-    for (let i = 1; i <= 6; i++) {
-      if (tkbData.times[`start_${i}`])
-        document.getElementById(`start_${i}`).value =
-          tkbData.times[`start_${i}`];
-      if (tkbData.times[`end_${i}`])
-        document.getElementById(`end_${i}`).value = tkbData.times[`end_${i}`];
-    }
-
-    for (let day = 2; day <= 7; day++) {
-      for (let p = 1; p <= selectedNum; p++) {
-        if (tkbData.subjects && tkbData.subjects[`aft_${day}_${p}`]) {
-          const el = document.getElementById(`aft_${day}_${p}`);
-          if (el) el.value = tkbData.subjects[`aft_${day}_${p}`];
-        }
-      }
-    }
-  } else {
-    enableAfternoon.checked = false;
-    afternoonManuallyCollapsed = false;
-    updateAfternoonVisibility();
-    renderAfternoonInputs(2);
-  }
-}
-
-loadLocalData();
-
-const clearAfternoonBtn = document.getElementById("clearAfternoonBtn");
-if (clearAfternoonBtn) {
-  clearAfternoonBtn.addEventListener("click", () => {
-    const textareas = document.querySelectorAll(
-      ".day-inputs textarea, .day-inputs input",
-    );
-    textareas.forEach((ta) => (ta.value = ""));
-    saveLocalData();
-  });
-}
-
-const noticeModal = document.getElementById("devNoticeModal");
-const dismissBtn = document.getElementById("dismissNoticeBtn");
-if (noticeModal && dismissBtn) {
-  const isDismissed = localStorage.getItem("dev_notice_dismissed");
-  if (!isDismissed) {
-    noticeModal.classList.add("active");
-  }
-  dismissBtn.addEventListener("click", () => {
-    localStorage.setItem("dev_notice_dismissed", "true");
-    noticeModal.classList.remove("active");
-  });
-}
-
-const OVERRIDE_STATE_KEY = "tkb_override_afternoon";
-const OVERRIDE_NOTICE_DISMISSED_KEY = "tkb_override_notice_dismissed";
-const overrideAfternoonCheckbox = document.getElementById(
-  "overrideAfternoonCheckbox",
+const tkbMatrix = document.getElementById("tkbMatrix");
+const btnMinusDay = document.getElementById("btnMinusDay");
+const btnPlusDay = document.getElementById("btnPlusDay");
+const btnMinusPeriod = document.getElementById("btnMinusPeriod");
+const btnPlusPeriod = document.getElementById("btnPlusPeriod");
+const overrideScheduleCheckbox = document.getElementById(
+  "overrideScheduleCheckbox",
 );
+const clearScheduleBtn = document.getElementById("clearScheduleBtn");
+const OVERRIDE_NOTICE_DISMISSED_KEY = "tkb_override_notice_dismissed";
 const overrideWarningModal = document.getElementById("overrideWarningModal");
 const confirmOverrideBtn = document.getElementById("confirmOverrideBtn");
-const dontShowOverrideNoticeAgain = document.getElementById(
-  "dontShowOverrideNoticeAgain",
-);
-const aftTimeSectionEl = document.getElementById("aftTimeSection");
-const aftSubjectsSectionEl = document.getElementById("aftSubjectsSection");
 
-function applyOverrideUnlock(checked) {
-  if (checked) {
-    enableAfternoon.disabled = false;
-    if (!enableAfternoon.checked) {
-      enableAfternoon.checked = true;
-      afternoonManuallyCollapsed = false;
-      updateAfternoonVisibility();
-    }
-    if (aftTimeSectionEl) aftTimeSectionEl.classList.remove("hidden");
-    if (aftSubjectsSectionEl) aftSubjectsSectionEl.classList.remove("hidden");
+function updateMatrixView() {
+  if (!tkbMatrix) return;
+
+  tkbMatrix.style.setProperty("--num-day-cols", currentMaxDay - 1);
+
+  for (let d = 2; d <= 8; d++) {
+    document.querySelectorAll(`.col-day[data-col="${d}"]`).forEach((el) => {
+      if (d <= currentMaxDay) el.classList.remove("hidden-matrix-element");
+      else el.classList.add("hidden-matrix-element");
+    });
   }
+
+  for (let p = 1; p <= 8; p++) {
+    const rowEl = document.querySelector(`.m-row.row-aft[data-row="${p}"]`);
+    if (rowEl) {
+      if (p <= currentAfternoonPeriods)
+        rowEl.classList.remove("hidden-matrix-element");
+      else rowEl.classList.add("hidden-matrix-element");
+    }
+  }
+
+  const dayDisplay = document.getElementById("dayCountDisplay");
+  if (dayDisplay) dayDisplay.innerText = currentMaxDay;
+  const periodDisplay = document.getElementById("periodCountDisplay");
+  if (periodDisplay) periodDisplay.innerText = currentAfternoonPeriods;
+
+  if (btnMinusDay) btnMinusDay.disabled = currentMaxDay <= 6;
+  if (btnPlusDay) btnPlusDay.disabled = currentMaxDay >= 8;
+  if (btnMinusPeriod) btnMinusPeriod.disabled = currentAfternoonPeriods <= 0;
+  if (btnPlusPeriod) btnPlusPeriod.disabled = currentAfternoonPeriods >= 8;
 }
 
-if (overrideAfternoonCheckbox) {
-  const savedOverride = localStorage.getItem(OVERRIDE_STATE_KEY) === "true";
-  overrideAfternoonCheckbox.checked = savedOverride;
-  applyOverrideUnlock(savedOverride);
+function applyOverrideState() {
+  if (!overrideScheduleCheckbox) return;
+  const isOverride = overrideScheduleCheckbox.checked;
 
-  overrideAfternoonCheckbox.addEventListener("change", (e) => {
-    const checked = e.target.checked;
-    localStorage.setItem(OVERRIDE_STATE_KEY, checked ? "true" : "false");
+  document.querySelectorAll(".morn-input").forEach((input) => {
+    const day = parseInt(input.dataset.day);
+    if (!isOverride) {
+      input.disabled = day !== 8;
+    } else {
+      input.disabled = false;
+    }
+  });
 
-    if (checked) {
-      applyOverrideUnlock(true);
+  document.querySelectorAll(".aft-input").forEach((input) => {
+    input.disabled = !isOverride;
+  });
+}
+
+if (overrideScheduleCheckbox) {
+  overrideScheduleCheckbox.addEventListener("change", (e) => {
+    applyOverrideState();
+    if (e.target.checked) {
       const noticeDismissed =
         localStorage.getItem(OVERRIDE_NOTICE_DISMISSED_KEY) === "true";
-      if (!noticeDismissed && overrideWarningModal) {
+      if (!noticeDismissed && overrideWarningModal)
         overrideWarningModal.classList.add("active");
-      }
     }
     saveLocalData();
   });
@@ -396,28 +176,208 @@ if (overrideAfternoonCheckbox) {
 
 if (confirmOverrideBtn && overrideWarningModal) {
   confirmOverrideBtn.addEventListener("click", () => {
-    if (dontShowOverrideNoticeAgain && dontShowOverrideNoticeAgain.checked) {
+    const dontShow = document.getElementById("dontShowOverrideNoticeAgain");
+    if (dontShow && dontShow.checked)
       localStorage.setItem(OVERRIDE_NOTICE_DISMISSED_KEY, "true");
-    }
     overrideWarningModal.classList.remove("active");
   });
 }
 
-fileInput.addEventListener("change", async () => {
-  if (fileInput.files.length > 0) {
-    if (isFirstVisit && optionsBoxController) {
-      optionsBoxController.setExpanded(true, { save: false });
+if (btnMinusDay)
+  btnMinusDay.addEventListener("click", () => {
+    if (currentMaxDay > 6) {
+      currentMaxDay--;
+      updateMatrixView();
+      saveLocalData();
+    }
+  });
+if (btnPlusDay)
+  btnPlusDay.addEventListener("click", () => {
+    if (currentMaxDay < 8) {
+      currentMaxDay++;
+      updateMatrixView();
+      saveLocalData();
+    }
+  });
+if (btnMinusPeriod)
+  btnMinusPeriod.addEventListener("click", () => {
+    if (currentAfternoonPeriods > 0) {
+      currentAfternoonPeriods--;
+      updateMatrixView();
+      saveLocalData();
+    }
+  });
+if (btnPlusPeriod)
+  btnPlusPeriod.addEventListener("click", () => {
+    if (currentAfternoonPeriods < 8) {
+      currentAfternoonPeriods++;
+      updateMatrixView();
+      saveLocalData();
+    }
+  });
+
+if (clearScheduleBtn) {
+  clearScheduleBtn.addEventListener("click", () => {
+    if (!overrideScheduleCheckbox.checked) {
+      alert("Bạn phải BẬT chức năng 'Ghi đè' để xóa nội dung tự điền.");
+      return;
+    }
+    document.querySelectorAll(".matrix-input").forEach((input) => {
+      input.value = "";
+    });
+    saveLocalData();
+  });
+}
+
+document.querySelectorAll(".matrix-input").forEach((input) => {
+  input.addEventListener("input", saveLocalData);
+});
+if (classInput) classInput.addEventListener("input", saveLocalData);
+
+const timePickerModal = document.getElementById("timePickerModal");
+const modalStartTime = document.getElementById("modalStartTime");
+const modalEndTime = document.getElementById("modalEndTime");
+const modalTimeCancelBtn = document.getElementById("modalTimeCancelBtn");
+const modalTimeSaveBtn = document.getElementById("modalTimeSaveBtn");
+
+document.querySelectorAll(".time-btn").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    currentTimeTarget = e.currentTarget;
+    const timeText = currentTimeTarget.innerText;
+    const parts = timeText.split("→").map((s) => s.trim());
+    modalStartTime.value = parts[0] || "";
+    modalEndTime.value = parts[1] || "";
+    timePickerModal.classList.add("active");
+  });
+});
+
+if (modalTimeCancelBtn)
+  modalTimeCancelBtn.addEventListener("click", () => {
+    timePickerModal.classList.remove("active");
+  });
+if (modalTimeSaveBtn)
+  modalTimeSaveBtn.addEventListener("click", () => {
+    if (currentTimeTarget) {
+      const s = modalStartTime.value || "--:--";
+      const e = modalEndTime.value || "--:--";
+      currentTimeTarget.innerText = `${s} → ${e}`;
+      saveLocalData();
+    }
+    timePickerModal.classList.remove("active");
+  });
+
+function saveLocalData() {
+  const tkbData = {
+    targetName: classInput ? classInput.value : "",
+    maxDay: currentMaxDay,
+    afternoonPeriods: currentAfternoonPeriods,
+    overrideEnabled: overrideScheduleCheckbox
+      ? overrideScheduleCheckbox.checked
+      : false,
+    times: {},
+    subjects: {},
+  };
+
+  document.querySelectorAll(".time-btn").forEach((btn) => {
+    tkbData.times[btn.dataset.timeId] = btn.innerText;
+  });
+  document.querySelectorAll(".matrix-input").forEach((input) => {
+    tkbData.subjects[
+      `${input.dataset.day}_${input.dataset.period}_${input.classList.contains("morn-input") ? "M" : "A"}`
+    ] = input.value;
+  });
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tkbData));
+}
+
+function loadLocalData() {
+  const savedData = localStorage.getItem(STORAGE_KEY);
+  if (savedData) {
+    const tkbData = JSON.parse(savedData);
+    if (tkbData.targetName && classInput) classInput.value = tkbData.targetName;
+    currentMaxDay = tkbData.maxDay || 7;
+    currentAfternoonPeriods =
+      tkbData.afternoonPeriods !== undefined ? tkbData.afternoonPeriods : 2;
+    if (overrideScheduleCheckbox)
+      overrideScheduleCheckbox.checked = tkbData.overrideEnabled || false;
+
+    if (tkbData.times) {
+      document.querySelectorAll(".time-btn").forEach((btn) => {
+        if (tkbData.times[btn.dataset.timeId])
+          btn.innerText = tkbData.times[btn.dataset.timeId];
+      });
     }
 
+    if (tkbData.subjects) {
+      document.querySelectorAll(".matrix-input").forEach((input) => {
+        const key = `${input.dataset.day}_${input.dataset.period}_${input.classList.contains("morn-input") ? "M" : "A"}`;
+        if (tkbData.subjects[key]) input.value = tkbData.subjects[key];
+      });
+    }
+  } else {
+    currentMaxDay = 7;
+    currentAfternoonPeriods = 2;
+    if (overrideScheduleCheckbox) overrideScheduleCheckbox.checked = false;
+  }
+  updateMatrixView();
+  applyOverrideState();
+}
+loadLocalData();
+
+const noticeModal = document.getElementById("devNoticeModal");
+const dismissBtn = document.getElementById("dismissNoticeBtn");
+if (noticeModal && dismissBtn) {
+  const isDismissed = localStorage.getItem("dev_notice_dismissed");
+  if (!isDismissed) noticeModal.classList.add("active");
+  dismissBtn.addEventListener("click", () => {
+    localStorage.setItem("dev_notice_dismissed", "true");
+    if (optionsBox) {
+      optionsBox.classList.add("expanded");
+      localStorage.setItem("tkb_options_expanded", "1");
+    }
+    noticeModal.classList.remove("active");
+  });
+}
+
+let cachedFileId = null;
+let currentPdfUrl = null;
+let currentApplyDate = "dd-mm-yyyy";
+let currentAbortController = null;
+
+function resetFileInput() {
+  fileInput.value = "";
+  fileNameDisplay.classList.add("hidden");
+  classSelectionContainer.classList.add("hidden");
+  submitContainer.classList.add("hidden");
+  cachedFileId = null;
+}
+
+function b64toBlob(b64Data, contentType = "") {
+  const byteCharacters = atob(b64Data);
+  const byteArrays = [];
+  for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+    const slice = byteCharacters.slice(offset, offset + 512);
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+    byteArrays.push(new Uint8Array(byteNumbers));
+  }
+  return new Blob(byteArrays, { type: contentType });
+}
+
+fileInput.addEventListener("change", async () => {
+  if (fileInput.files.length > 0) {
     const file = fileInput.files[0];
     const ext = file.name.split(".").pop().toLowerCase();
     const validExts = isTeacherMode ? ["xlsx", "xls", "csv"] : ["pdf"];
 
     if (!validExts.includes(ext)) {
-      const errorMsg = isTeacherMode
-        ? "Lỗi: Bản giáo viên chỉ hỗ trợ tệp định dạng Excel (.xlsx, .xls, .csv)!"
-        : "Lỗi: Bản học sinh chỉ hỗ trợ tệp định dạng .PDF!";
-      alert(errorMsg);
+      alert(
+        isTeacherMode
+          ? "Lỗi: Bản giáo viên chỉ hỗ trợ tệp định dạng Excel (.xlsx, .xls, .csv)!"
+          : "Lỗi: Bản học sinh chỉ hỗ trợ tệp định dạng .PDF!",
+      );
       resetFileInput();
       return;
     }
@@ -447,7 +407,6 @@ fileInput.addEventListener("change", async () => {
 
         if (response.ok && data.teachers) {
           cachedFileId = data.file_id;
-          window.teacherKeywords = data.teachers;
           const dataList = document.getElementById("teacherList");
           dataList.innerHTML = "";
           data.teachers.forEach((t) => {
@@ -459,45 +418,12 @@ fileInput.addEventListener("change", async () => {
           fileNameDisplay.innerText = `📂 Tệp đã chọn: ${file.name} (Đã tìm thấy ${data.teachers.length} Giáo Viên)`;
           classSelectionContainer.classList.remove("hidden");
           submitContainer.classList.remove("hidden");
-
-          if (data.metadata) {
-            const has_afternoon = data.metadata.has_afternoon;
-            const has_time = data.metadata.has_time;
-
-            const aftTimeSec = document.getElementById("aftTimeSection");
-            const aftSubjSec = document.getElementById("aftSubjectsSection");
-
-            if (has_afternoon) {
-              enableAfternoon.checked = true;
-              enableAfternoon.disabled = true;
-
-              if (!has_time) {
-                afternoonManuallyCollapsed = false;
-                if (aftTimeSec) aftTimeSec.classList.remove("hidden");
-                if (aftSubjSec) aftSubjSec.classList.add("hidden");
-              } else {
-                afternoonManuallyCollapsed = true;
-              }
-              updateAfternoonVisibility();
-            } else {
-              enableAfternoon.disabled = false;
-              if (aftTimeSec) aftTimeSec.classList.remove("hidden");
-              if (aftSubjSec) aftSubjSec.classList.remove("hidden");
-            }
-
-            if (
-              overrideAfternoonCheckbox &&
-              overrideAfternoonCheckbox.checked
-            ) {
-              applyOverrideUnlock(true);
-            }
-          }
         } else {
           alert("Lỗi đọc file: " + data.error);
           resetFileInput();
         }
       } catch (err) {
-        alert("Lỗi kết nối máy chủ khi lấy danh sách: " + err);
+        alert("Lỗi kết nối máy chủ: " + err);
         resetFileInput();
       } finally {
         uploadBtn.disabled = false;
@@ -513,36 +439,6 @@ fileInput.addEventListener("change", async () => {
   }
 });
 
-let cachedFileId = null;
-
-function resetFileInput() {
-  fileInput.value = "";
-  fileNameDisplay.classList.add("hidden");
-  classSelectionContainer.classList.add("hidden");
-  submitContainer.classList.add("hidden");
-  cachedFileId = null;
-}
-
-let currentPdfUrl = null;
-let currentApplyDate = "dd-mm-yyyy";
-
-function b64toBlob(b64Data, contentType = "") {
-  const byteCharacters = atob(b64Data);
-  const byteArrays = [];
-  for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-    const slice = byteCharacters.slice(offset, offset + 512);
-    const byteNumbers = new Array(slice.length);
-    for (let i = 0; i < slice.length; i++) {
-      byteNumbers[i] = slice.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    byteArrays.push(byteArray);
-  }
-  return new Blob(byteArrays, { type: contentType });
-}
-
-let currentAbortController = null;
-
 uploadBtn.addEventListener("click", async () => {
   if (fileInput.files.length === 0) return;
 
@@ -557,63 +453,74 @@ uploadBtn.addEventListener("click", async () => {
   }
 
   const formData = new FormData();
-
   if (isTeacherMode) {
     formData.append("teacher_name", inputName);
-    if (cachedFileId) {
-      formData.append("file_id", cachedFileId);
-    } else {
-      formData.append("file", fileInput.files[0]);
-    }
+    if (cachedFileId) formData.append("file_id", cachedFileId);
+    else formData.append("file", fileInput.files[0]);
   } else {
     formData.append("class_name", inputName);
     formData.append("file", fileInput.files[0]);
   }
 
-  formData.append("morning_times", JSON.stringify(getMorningTimesPayload()));
-  const isOverride = overrideAfternoonCheckbox
-    ? overrideAfternoonCheckbox.checked
+  const morningTimesPayload = [];
+  for (let i = 0; i <= 5; i++) {
+    const btn = document.querySelector(
+      `.time-btn[data-time-id="morning_${i}"]`,
+    );
+    morningTimesPayload.push(btn ? btn.innerText : "—");
+  }
+  formData.append("morning_times", JSON.stringify(morningTimesPayload));
+
+  const isOverride = overrideScheduleCheckbox
+    ? overrideScheduleCheckbox.checked
     : false;
-  formData.append("override_afternoon", isOverride);
+  formData.append("override_schedule", isOverride);
 
-  if (enableAfternoon.checked && !enableAfternoon.disabled) {
-    const numPeriods = parseInt(document.getElementById("numPeriods").value);
-    const timesArray = [];
-
-    for (let i = 1; i <= numPeriods; i++) {
-      const start = document.getElementById(`start_${i}`).value;
-      const end = document.getElementById(`end_${i}`).value;
-      if (start && end) timesArray.push(`${start} → ${end}`);
-      else timesArray.push("—");
-    }
-
-    const afternoonData = { times: timesArray, schedule: {} };
-    for (let day = 2; day <= 7; day++) {
-      const daySubjects = [];
-      for (let p = 1; p <= numPeriods; p++) {
-        const subjEl = document.getElementById(`aft_${day}_${p}`);
+  const morningData = { schedule: {} };
+  for (let day = 2; day <= 8; day++) {
+    const daySubjects = [];
+    if (day <= currentMaxDay) {
+      for (let p = 1; p <= 5; p++) {
+        const subjEl = document.querySelector(
+          `.morn-input[data-day="${day}"][data-period="${p}"]`,
+        );
         const val = subjEl ? subjEl.value.trim() : "";
         daySubjects.push(val !== "" ? val : "—");
       }
+    } else {
+      for (let p = 1; p <= 5; p++) daySubjects.push("—");
+    }
+    morningData.schedule[day] = daySubjects;
+  }
+  formData.append("morning_data", JSON.stringify(morningData));
+
+  if (currentAfternoonPeriods > 0) {
+    const aftTimesArray = [];
+    for (let i = 1; i <= currentAfternoonPeriods; i++) {
+      const btn = document.querySelector(
+        `.time-btn[data-time-id="afternoon_${i}"]`,
+      );
+      aftTimesArray.push(btn ? btn.innerText : "—");
+    }
+
+    const afternoonData = { times: aftTimesArray, schedule: {} };
+    for (let day = 2; day <= 8; day++) {
+      const daySubjects = [];
+      if (day <= currentMaxDay) {
+        for (let p = 1; p <= currentAfternoonPeriods; p++) {
+          const subjEl = document.querySelector(
+            `.aft-input[data-day="${day}"][data-period="${p}"]`,
+          );
+          const val = subjEl ? subjEl.value.trim() : "";
+          daySubjects.push(val !== "" ? val : "—");
+        }
+      } else {
+        for (let p = 1; p <= currentAfternoonPeriods; p++)
+          daySubjects.push("—");
+      }
       afternoonData.schedule[day] = daySubjects;
     }
-
     formData.append("afternoon_data", JSON.stringify(afternoonData));
-  } else if (enableAfternoon.checked && enableAfternoon.disabled) {
-    const aftTimeSec = document.getElementById("aftTimeSection");
-
-    if (aftTimeSec && !aftTimeSec.classList.contains("hidden")) {
-      const numPeriods = parseInt(document.getElementById("numPeriods").value);
-      const timesArray = [];
-
-      for (let i = 1; i <= numPeriods; i++) {
-        const start = document.getElementById(`start_${i}`).value;
-        const end = document.getElementById(`end_${i}`).value;
-        if (start && end) timesArray.push(`${start} → ${end}`);
-        else timesArray.push("—");
-      }
-      formData.append("afternoon_times_only", JSON.stringify(timesArray));
-    }
   }
 
   uploadBtn.disabled = true;
@@ -625,7 +532,7 @@ uploadBtn.addEventListener("click", async () => {
   const loadingSub = document.querySelector(".loading-sub");
   const coldStartTimer = setTimeout(() => {
     loadingSub.innerText =
-      "Hệ thống AI đang phân tích cấu trúc lịch của trường bạn, vui lòng đợi thêm chút nhé...";
+      "Hệ thống AI đang phân tích cấu trúc lịch, vui lòng đợi thêm chút nhé...";
     loadingSub.style.color = "var(--accent-color)";
     loadingSub.style.fontWeight = "bold";
   }, 25000);
@@ -634,13 +541,11 @@ uploadBtn.addEventListener("click", async () => {
     const TARGET_URL = isTeacherMode
       ? ENDPOINTS.processTeacher
       : ENDPOINTS.processStudent;
-
     let response = await fetch(TARGET_URL, {
       method: "POST",
       body: formData,
       signal: currentAbortController.signal,
     });
-
     let data;
 
     if (response.status === 404 && isTeacherMode) {
@@ -648,7 +553,6 @@ uploadBtn.addEventListener("click", async () => {
       if (data.error === "FILE_EXPIRED") {
         formData.delete("file_id");
         formData.append("file", fileInput.files[0]);
-
         response = await fetch(TARGET_URL, {
           method: "POST",
           body: formData,
@@ -663,12 +567,10 @@ uploadBtn.addEventListener("click", async () => {
     clearTimeout(coldStartTimer);
 
     if (response.ok) {
-      if (data.apply_date && data.apply_date !== "dd/mm/yyyy") {
-        currentApplyDate = data.apply_date.replace(/\//g, "-");
-      } else {
-        currentApplyDate = "dd-mm-yyyy";
-      }
-
+      currentApplyDate =
+        data.apply_date && data.apply_date !== "dd/mm/yyyy"
+          ? data.apply_date.replace(/\//g, "-")
+          : "dd-mm-yyyy";
       document.getElementById("shortText").value = data.shortened_text;
       document.getElementById("tkbImage").src =
         "data:image/png;base64," + data.image_base64;
@@ -685,12 +587,7 @@ uploadBtn.addEventListener("click", async () => {
     }
   } catch (error) {
     clearTimeout(coldStartTimer);
-
-    if (error.name === "AbortError") {
-      console.log("Tiến trình đã bị người dùng hủy.");
-      return;
-    }
-
+    if (error.name === "AbortError") return;
     alert("Không thể kết nối đến máy chủ: " + error);
     submitContainer.classList.remove("hidden");
   } finally {
@@ -702,69 +599,72 @@ uploadBtn.addEventListener("click", async () => {
   }
 });
 
-document.getElementById("copyBtn").addEventListener("click", () => {
-  const textToCopy = document.getElementById("shortText");
-  textToCopy.select();
-  navigator.clipboard.writeText(textToCopy.value).then(() => {
-    const copyBtn = document.getElementById("copyBtn");
-    copyBtn.innerText = "Đã sao chép! ✓";
-    setTimeout(() => (copyBtn.innerText = "Sao chép"), 2000);
+const copyBtn = document.getElementById("copyBtn");
+if (copyBtn) {
+  copyBtn.addEventListener("click", () => {
+    const textToCopy = document.getElementById("shortText");
+    textToCopy.select();
+    navigator.clipboard.writeText(textToCopy.value).then(() => {
+      copyBtn.innerText = "Đã sao chép! ✓";
+      setTimeout(() => (copyBtn.innerText = "Sao chép"), 2000);
+    });
   });
-});
+}
 
-document.getElementById("downloadBtn").addEventListener("click", () => {
-  const imgUrl = document.getElementById("tkbImage").src;
-  const downloadLink = document.createElement("a");
-  downloadLink.href = imgUrl;
+const downloadBtn = document.getElementById("downloadBtn");
+if (downloadBtn) {
+  downloadBtn.addEventListener("click", () => {
+    const imgUrl = document.getElementById("tkbImage").src;
+    const downloadLink = document.createElement("a");
+    downloadLink.href = imgUrl;
+    downloadLink.download = `TKB_${currentApplyDate}.png`;
+    downloadLink.click();
+  });
+}
 
-  downloadLink.download = `TKB_${currentApplyDate}.png`;
-
-  downloadLink.click();
-});
-
-document.getElementById("downloadPdfBtn").addEventListener("click", () => {
-  if (!currentPdfUrl) {
-    alert("Chưa có file TKB để tải!");
-    return;
-  }
-  const a = document.createElement("a");
-  a.href = currentPdfUrl;
-
-  a.download = `TKB_${currentApplyDate}.pdf`;
-
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-});
-
-document.getElementById("printBtn").addEventListener("click", () => {
-  if (!currentPdfUrl) {
-    alert("Chưa có file TKB để in!");
-    return;
-  }
-
-  let printFrame = document.getElementById("__printFrame");
-  if (!printFrame) {
-    printFrame = document.createElement("iframe");
-    printFrame.id = "__printFrame";
-    printFrame.style.cssText =
-      "position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none;";
-    document.body.appendChild(printFrame);
-  }
-
-  printFrame.onload = () => {
-    try {
-      printFrame.contentWindow.focus();
-      printFrame.contentWindow.print();
-    } catch (e) {
-      const fallback = window.open(currentPdfUrl, "_blank");
-      if (!fallback) {
-        alert("Vui lòng cho phép Pop-up để mở cửa sổ in!");
-      }
+const downloadPdfBtn = document.getElementById("downloadPdfBtn");
+if (downloadPdfBtn) {
+  downloadPdfBtn.addEventListener("click", () => {
+    if (!currentPdfUrl) {
+      alert("Chưa có file TKB để tải!");
+      return;
     }
-  };
-  printFrame.src = currentPdfUrl;
-});
+    const a = document.createElement("a");
+    a.href = currentPdfUrl;
+    a.download = `TKB_${currentApplyDate}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  });
+}
+
+const printBtn = document.getElementById("printBtn");
+if (printBtn) {
+  printBtn.addEventListener("click", () => {
+    if (!currentPdfUrl) {
+      alert("Chưa có file TKB để in!");
+      return;
+    }
+    let printFrame = document.getElementById("__printFrame");
+    if (!printFrame) {
+      printFrame = document.createElement("iframe");
+      printFrame.id = "__printFrame";
+      printFrame.style.cssText =
+        "position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none;";
+      document.body.appendChild(printFrame);
+    }
+    printFrame.onload = () => {
+      try {
+        printFrame.contentWindow.focus();
+        printFrame.contentWindow.print();
+      } catch (e) {
+        const fallback = window.open(currentPdfUrl, "_blank");
+        if (!fallback) alert("Vui lòng cho phép Pop-up để mở cửa sổ in!");
+      }
+    };
+    printFrame.src = currentPdfUrl;
+  });
+}
 
 (function () {
   const previewImg = document.getElementById("tkbImage");
@@ -773,29 +673,25 @@ document.getElementById("printBtn").addEventListener("click", () => {
   const closeBtn = document.getElementById("lightboxClose");
 
   if (!previewImg || !overlay || !lightboxImg || !closeBtn) return;
-
   const MIN_SCALE = 1;
   const MAX_SCALE = 4;
-
-  let scale = 1;
-  let originX = 0;
-  let originY = 0;
-  let isDragging = false;
-  let startX = 0;
-  let startY = 0;
-  let lastTouchDist = null;
+  let scale = 1,
+    originX = 0,
+    originY = 0,
+    isDragging = false,
+    startX = 0,
+    startY = 0,
+    lastTouchDist = null;
 
   function applyTransform() {
     lightboxImg.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
   }
-
   function resetTransform() {
     scale = 1;
     originX = 0;
     originY = 0;
     applyTransform();
   }
-
   function openLightbox() {
     if (!previewImg.src) return;
     lightboxImg.src = previewImg.src;
@@ -803,7 +699,6 @@ document.getElementById("printBtn").addEventListener("click", () => {
     overlay.classList.add("active");
     document.body.style.overflow = "hidden";
   }
-
   function closeLightbox() {
     overlay.classList.remove("active");
     document.body.style.overflow = "";
@@ -812,11 +707,9 @@ document.getElementById("printBtn").addEventListener("click", () => {
 
   previewImg.addEventListener("click", openLightbox);
   closeBtn.addEventListener("click", closeLightbox);
-
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeLightbox();
   });
-
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && overlay.classList.contains("active"))
       closeLightbox();
@@ -827,8 +720,10 @@ document.getElementById("printBtn").addEventListener("click", () => {
     (e) => {
       if (!overlay.classList.contains("active")) return;
       e.preventDefault();
-      const delta = e.deltaY < 0 ? 0.15 : -0.15;
-      scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale + delta));
+      scale = Math.min(
+        MAX_SCALE,
+        Math.max(MIN_SCALE, scale + (e.deltaY < 0 ? 0.15 : -0.15)),
+      );
       if (scale === MIN_SCALE) {
         originX = 0;
         originY = 0;
@@ -857,17 +752,16 @@ document.getElementById("printBtn").addEventListener("click", () => {
   });
 
   function getTouchDist(touches) {
-    const dx = touches[0].clientX - touches[1].clientX;
-    const dy = touches[0].clientY - touches[1].clientY;
-    return Math.hypot(dx, dy);
+    return Math.hypot(
+      touches[0].clientX - touches[1].clientX,
+      touches[0].clientY - touches[1].clientY,
+    );
   }
-
   overlay.addEventListener(
     "touchstart",
     (e) => {
-      if (e.touches.length === 2) {
-        lastTouchDist = getTouchDist(e.touches);
-      } else if (e.touches.length === 1 && scale > MIN_SCALE) {
+      if (e.touches.length === 2) lastTouchDist = getTouchDist(e.touches);
+      else if (e.touches.length === 1 && scale > MIN_SCALE) {
         isDragging = true;
         startX = e.touches[0].clientX - originX;
         startY = e.touches[0].clientY - originY;
@@ -875,15 +769,16 @@ document.getElementById("printBtn").addEventListener("click", () => {
     },
     { passive: false },
   );
-
   overlay.addEventListener(
     "touchmove",
     (e) => {
       if (e.touches.length === 2 && lastTouchDist !== null) {
         e.preventDefault();
         const newDist = getTouchDist(e.touches);
-        const diff = newDist - lastTouchDist;
-        scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale + diff * 0.01));
+        scale = Math.min(
+          MAX_SCALE,
+          Math.max(MIN_SCALE, scale + (newDist - lastTouchDist) * 0.01),
+        );
         if (scale === MIN_SCALE) {
           originX = 0;
           originY = 0;
@@ -899,28 +794,22 @@ document.getElementById("printBtn").addEventListener("click", () => {
     },
     { passive: false },
   );
-
   overlay.addEventListener("touchend", (e) => {
     if (e.touches.length < 2) lastTouchDist = null;
     if (e.touches.length === 0) isDragging = false;
   });
-
-  lightboxImg.addEventListener("dblclick", () => resetTransform());
+  lightboxImg.addEventListener("dblclick", resetTransform);
 })();
 
 const cancelProcessBtn = document.getElementById("cancelProcessBtn");
 if (cancelProcessBtn) {
   cancelProcessBtn.addEventListener("click", () => {
-    if (currentAbortController) {
-      currentAbortController.abort();
-    }
-
+    if (currentAbortController) currentAbortController.abort();
     loadingBox.classList.add("hidden");
     submitContainer.classList.remove("hidden");
     uploadBtn.disabled = false;
   });
 }
-
 const reprocessBtn = document.getElementById("reprocessBtn");
 if (reprocessBtn) {
   reprocessBtn.addEventListener("click", () => {
