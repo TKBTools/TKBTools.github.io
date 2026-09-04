@@ -196,7 +196,7 @@
 
                   <script>
                     const aftTimes = [
-                      "14:00 → 14:45", "14:50 → 15:35", "15:45 → 16:30", "16:35 → 17:20", "17:25 → 18:10", "18:15 → 19:00", "19:15 → 20:00", "20:05 → 20:50",
+                      "13:15 → 14:00", "14:00 → 14:45", "14:50 → 15:35", "15:45 → 16:30", "16:35 → 17:20", "17:25 → 18:10", "18:15 → 19:00", "19:15 → 20:00",
                     ];
                     for (let i = 1; i <= 8; i++) {
                       document.write(`<div class="m-row row-aft" data-row="${i}">`);
@@ -250,12 +250,8 @@
             </div>
             <div class="action-buttons">
               <button id="printBtn" class="btn btn-secondary">In 🖨️</button>
-              <button id="downloadPdfBtn" class="btn btn-secondary">
-                Tải PDF 📄
-              </button>
-              <button id="downloadBtn" class="btn btn-success">
-                Tải ảnh xuống ⬇️
-              </button>
+              <button id="downloadPdfBtn" class="btn btn-secondary">Xuất sang PDF 📄</button>
+              <button id="downloadBtn" class="btn btn-success">Xuất thành ảnh 🖼️</button>
               <button id="reprocessBtn" class="btn btn-danger">
                 Xử lý lại 🔄
               </button>
@@ -286,6 +282,7 @@
       </p>
       <div class="footer-links">
         <a href="../feedback/" class="footer-link">💬 Gửi góp ý & Báo lỗi</a>
+        <a id="resetDataBtn" class="footer-link" style="color: #ef4444; border-color: #fca5a5; background-color: rgba(239, 68, 68, 0.1);">🗑️ Xóa dữ liệu trang web</a>
         <a
           href="https://github.com/TKBTools"
           class="footer-link github-link"
@@ -317,56 +314,15 @@
     </div>
 
     <div id="devNoticeModal" class="lightbox-overlay">
-      <div
-        class="modal-content card"
-        style="
-          max-width: 500px;
-          width: 90%;
-          text-align: center;
-          position: relative;
-        "
-      >
-        <h3 style="margin-bottom: 15px; color: var(--accent-color)">
-          👋 Chào mừng đến với TKB Tools
-        </h3>
-        <p
-          style="
-            margin-bottom: 20px;
-            font-size: 15px;
-            line-height: 1.6;
-            color: var(--text-secondary);
-          "
-        >
-          <strong>Nếu bạn là người mới</strong>,
-          <br>hãy xem
-          <a
-            href="../HDSD/GV.html"
-            target="_blank"
-            rel="noopener"
-            class="btn btn-secondary btn-small"
-            style="vertical-align: middle; margin: 0 2px"
-            >❓ HDSD</a
-          >
-          để biết cách dùng nhé.<br /><br />
-          <strong>Nếu gặp lỗi</strong> trong quá trình trích xuất,
-          <br>hãy gửi
-          <a
-            href="../feedback/"
-            class="footer-link"
-            style="vertical-align: middle; margin: 0 2px"
-            >💬 Gửi góp ý & Báo lỗi</a
-          >
-          cho nhà phát triển nhé!
+      <div class="modal-content card" style="max-width: 420px; width: 90%; text-align: center; padding: 25px;">
+        <h3 style="margin-bottom: 12px; color: var(--accent-color); font-size: 18px;">👋 Chào mừng đến với TKB Tools</h3>
+        <p style="margin-bottom: 20px; font-size: 14px; line-height: 1.5; color: var(--text-secondary);">
+          <strong>Dành cho người mới</strong>, hãy xem <a href="../HDSD/GV.html" target="_blank" rel="noopener" class="btn btn-secondary btn-small" style="padding: 4px 8px;">❓ HDSD</a> để biết cách dùng.<br><br>
+          <strong>Nếu gặp lỗi</strong>, hãy gửi <a href="../feedback/" class="footer-link" style="padding: 4px 8px; font-size: 13px;">💬 Góp ý & Báo lỗi</a> cho mình nhé!
         </p>
-        <button
-          id="dismissNoticeBtn"
-          class="btn btn-primary"
-          style="width: 100%"
-        >
-          Đã hiểu
-        </button>
+        <button id="dismissNoticeBtn" class="btn btn-primary" style="width: 100%; padding: 10px;">Đã hiểu & Bắt đầu</button>
       </div>
-    </div>
+    </div>    
 
     <div id="overrideWarningModal" class="lightbox-overlay">
       <div
@@ -460,5 +416,19 @@
       </div>
     </div>
     <script src="../scripts.js"></script>
+      <div id="exportModal" class="lightbox-overlay">
+        <div class="modal-content card" style="max-width: 380px; width: 90%; text-align: center; position: relative; padding: 25px;">
+          <span id="exportModalClose" class="lightbox-close" style="left: 15px; right: auto; top: 15px;">&times;</span>
+          
+          <h3 style="margin-bottom: 20px; margin-top: 5px; color: var(--accent-color)">Tùy chọn Xuất file</h3>
+          <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+            <button id="exportDownloadBtn" class="btn btn-secondary" style="flex: 1;">⬇️ Tải về máy</button>
+            <button id="exportShareBtn" class="btn btn-primary" style="flex: 1;">📤 Chia sẻ</button>
+          </div>
+          <label class="checkbox-inline" style="justify-content: center; color: var(--text-secondary);">
+            <input type="checkbox" id="rememberExportChoice"> Ghi nhớ lựa chọn cho lần sau
+          </label>
+        </div>
+    </div>
   </body>
 </html>

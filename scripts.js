@@ -202,10 +202,6 @@ if (btnPlusPeriod)
 
 if (clearScheduleBtn) {
   clearScheduleBtn.addEventListener("click", () => {
-    if (!overrideScheduleCheckbox.checked) {
-      alert("Bạn phải BẬT chức năng 'Ghi đè' để xóa nội dung tự điền.");
-      return;
-    }
     document.querySelectorAll(".matrix-input").forEach((input) => {
       input.value = "";
     });
@@ -590,31 +586,118 @@ if (copyBtn) {
   });
 }
 
-const downloadBtn = document.getElementById("downloadBtn");
-if (downloadBtn) {
-  downloadBtn.addEventListener("click", () => {
+const exportModal = document.getElementById("exportModal");
+const exportDownloadBtn = document.getElementById("exportDownloadBtn");
+const exportShareBtn = document.getElementById("exportShareBtn");
+const rememberExportChoice = document.getElementById("rememberExportChoice");
+const exportModalClose = document.getElementById("exportModalClose");
+
+let currentExportTarget = null;
+
+function executeDownload(target) {
+  if (target === 'image') {
     const imgUrl = document.getElementById("tkbImage").src;
     const downloadLink = document.createElement("a");
     downloadLink.href = imgUrl;
     downloadLink.download = `TKB_${currentApplyDate}.png`;
     downloadLink.click();
-  });
-}
-
-const downloadPdfBtn = document.getElementById("downloadPdfBtn");
-if (downloadPdfBtn) {
-  downloadPdfBtn.addEventListener("click", () => {
-    if (!currentPdfUrl) {
-      alert("Chưa có file TKB để tải!");
-      return;
-    }
+  } else if (target === 'pdf') {
+    if (!currentPdfUrl) { alert("Chưa có file PDF!"); return; }
     const a = document.createElement("a");
     a.href = currentPdfUrl;
     a.download = `TKB_${currentApplyDate}.pdf`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-  });
+  }
+}
+
+async function executeShare(target) {
+  if (!navigator.share) {
+    alert("Trình duyệt/Thiết bị của bạn không hỗ trợ tính năng chia sẻ trực tiếp. Đang chuyển sang chế độ tải về...");
+    return false;
+  }
+  
+  try {
+    let fileToShare;
+    if (target === 'image') {
+      const img = document.getElementById("tkbImage");
+      const res = await fetch(img.src);
+      const blob = await res.blob();
+      fileToShare = new File([blob], `TKB_${currentApplyDate}.png`, { type: 'image/png' });
+    } else {
+      const res = await fetch(currentPdfUrl);
+      const blob = await res.blob();
+      fileToShare = new File([blob], `TKB_${currentApplyDate}.pdf`, { type: 'application/pdf' });
+    }
+
+    if (navigator.canShare && navigator.canShare({ files: [fileToShare] })) {
+      await navigator.share({
+        title: 'TKB Tools',
+        text: 'Thời khóa biểu của mình này!',
+        files: [fileToShare]
+      });
+      return true;
+    } else {
+      alert("Thiết bị không cho phép chia sẻ trực tiếp định dạng file này. Đang chuyển sang chế độ tải về...");
+      return false; 
+    }
+  } catch (err) {
+    if (err.name !== "AbortError") console.error("Lỗi chia sẻ:", err);
+    return false;
+  }
+}
+
+function triggerExport(target) {
+  currentExportTarget = target;
+  const savedPref = localStorage.getItem("tkb_export_pref");
+  
+  if (savedPref === "download") {
+    executeDownload(target);
+  } else if (savedPref === "share") {
+    executeShare(target).then(success => { 
+      if (!success) executeDownload(target);
+    }); 
+  } else {
+    exportModal.classList.add("active");
+  }
+}
+
+const downloadPdfBtn = document.getElementById("downloadPdfBtn");
+if (downloadPdfBtn) downloadPdfBtn.onclick = () => triggerExport('pdf');
+
+const downloadBtn = document.getElementById("downloadBtn");
+if (downloadBtn) downloadBtn.onclick = () => triggerExport('image');
+
+if (exportDownloadBtn) {
+  exportDownloadBtn.onclick = () => {
+    if (rememberExportChoice.checked) localStorage.setItem("tkb_export_pref", "download");
+    exportModal.classList.remove("active");
+    executeDownload(currentExportTarget);
+  };
+}
+
+if (exportShareBtn) {
+  exportShareBtn.onclick = () => {
+    if (rememberExportChoice.checked) localStorage.setItem("tkb_export_pref", "share");
+    exportModal.classList.remove("active");
+    executeShare(currentExportTarget).then(success => {
+      if(!success) executeDownload(currentExportTarget); 
+    });
+  };
+}
+
+if (exportModalClose) exportModalClose.onclick = () => exportModal.classList.remove("active");
+
+const resetDataBtn = document.getElementById("resetDataBtn");
+if (resetDataBtn) {
+  resetDataBtn.onclick = () => {
+    const isConfirmed = confirm("⚠️ BẠN CÓ CHẮC CHẮN MUỐN XÓA TOÀN BỘ DỮ LIỆU?\n\nHành động này sẽ xóa toàn bộ lịch ghi đè, cấu hình giờ giấc, lựa chọn lưu file và đưa trang web về trạng thái mặc định ban đầu.");
+    if (isConfirmed) {
+      localStorage.clear();
+      window.location.reload();
+    }
+  };
 }
 
 const printBtn = document.getElementById("printBtn");
