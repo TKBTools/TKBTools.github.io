@@ -1,107 +1,76 @@
 <!doctype html>
 <html lang="vi" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Công cụ Xử lý Thời Khóa Biểu - Dành cho Học sinh</title>
-    <link rel="icon" type="image/png" href="../favicon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300..900;1,300..900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="../style.css" />
-    <script>
-      localStorage.setItem("user_role", "student");
-    </script>
-  </head>
-  <body>
-    <header class="top-bar">
-      <div class="top-bar-actions">
-        <a
-          id="guideBtn"
-          href="../HDSD/HS.html"
-          class="btn btn-secondary btn-small"
-          target="_blank"
-          rel="noopener"
-          >❓ HDSD</a
-        >
-        <a
-          id="downloadTkbBtn"
-          href="https://thptcamgiang.haiphong.edu.vn/thoi-khoa-bieu/c/37065"
-          class="btn btn-secondary btn-small"
-          target="_blank"
-          rel="noopener"
-          >📥 Tải TKB</a
-        >
-      </div>
-      <div class="segmented-control">
-        <input
-          type="radio"
-          name="theme-select"
-          id="theme-light"
-          value="light"
-        />
-        <label for="theme-light" title="Giao diện sáng">☀️</label>
-        <input type="radio" name="theme-select" id="theme-dark" value="dark" />
-        <label for="theme-dark" title="Giao diện tối">🌙</label>
-        <div class="glider"></div>
-      </div>
-    </header>
 
-    <main class="container">
-      <div class="brand-zone">
-        <h1 class="main-title">TẠO THỜI KHÓA BIỂU</h1>
-        <div class="role-tabs">
-          <a href="#" class="role-tab active">🎓 Dành cho Học sinh</a>
-          <a href="../teacher/" class="role-tab">👨‍🏫 Dành cho Giáo viên</a>
-        </div>
-        <p class="sub-title">
-          Chuyển đổi tệp TKB của toàn trường thành ảnh và văn bản rút gọn của
-          lớp một cách nhanh chóng và dễ dàng!
-        </p>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Công cụ Xử lý Thời Khóa Biểu - Dành cho Học sinh</title>
+  <link rel="icon" type="image/png" href="../favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300..900;1,300..900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+  <script>
+    localStorage.setItem("user_role", "student");
+  </script>
+</head>
 
-      <section class="card upload-card">
-        <div class="upload-zone" id="dropZone">
-          <div class="upload-icon">📂</div>
-          <label for="pdfFile" class="upload-label">
-            <span class="highlight">Chọn một tệp TKB tổng</span
-            ><span class="desktop-only"> hoặc kéo thả vào đây</span>
-          </label>
-          <input type="file" id="pdfFile" accept=".pdf, .xlsx, .xls, .csv" />
-          <p
-            style="
+<body>
+  <header class="top-bar">
+    <div class="top-bar-actions">
+      <a id="guideBtn" href="../HDSD/HS.html" class="btn btn-secondary btn-small" target="_blank" rel="noopener">❓
+        HDSD</a>
+      <a id="downloadTkbBtn" href="https://thptcamgiang.haiphong.edu.vn/thoi-khoa-bieu/c/37065"
+        class="btn btn-secondary btn-small" target="_blank" rel="noopener">📥 Tải TKB</a>
+    </div>
+    <div class="segmented-control">
+      <input type="radio" name="theme-select" id="theme-light" value="light" />
+      <label for="theme-light" title="Giao diện sáng">☀️</label>
+      <input type="radio" name="theme-select" id="theme-dark" value="dark" />
+      <label for="theme-dark" title="Giao diện tối">🌙</label>
+      <div class="glider"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="brand-zone">
+      <h1 class="main-title">TẠO THỜI KHÓA BIỂU</h1>
+      <div class="role-tabs">
+        <a href="#" class="role-tab active">🎓 Dành cho Học sinh</a>
+        <a href="../teacher/" class="role-tab">👨‍🏫 Dành cho Giáo viên</a>
+      </div>
+      <p class="sub-title">
+        Chuyển đổi tệp TKB của toàn trường thành ảnh và văn bản rút gọn của
+        lớp một cách nhanh chóng và dễ dàng!
+      </p>
+    </div>
+
+    <section class="card upload-card">
+      <div class="upload-zone" id="dropZone">
+        <div class="upload-icon">📂</div>
+        <label for="pdfFile" class="upload-label">
+          <span class="highlight">Chọn một tệp TKB tổng</span><span class="desktop-only"> hoặc kéo thả vào đây</span>
+        </label>
+        <input type="file" id="pdfFile" accept=".pdf, .xlsx, .xls, .csv" />
+        <p style="
               color: var(--text-secondary);
               font-size: 13px;
               margin-top: 8px;
-            "
-          >
-            * Hỗ trợ tệp định dạng .PDF, .XLSX, .XLS, .CSV
-          </p>
-          <p id="fileNameDisplay" class="file-name-text hidden"></p>
-        </div>
+            ">
+          * Hỗ trợ tệp định dạng .PDF, .XLSX, .XLS, .CSV
+        </p>
+        <p id="fileNameDisplay" class="file-name-text hidden"></p>
+      </div>
 
-        <div
-          id="classSelectionContainer"
-          class="class-selection-box hidden"
-          style="margin-top: 20px; text-align: left"
-        >
-          <label
-            for="classInput"
-            style="
+      <div id="classSelectionContainer" class="class-selection-box hidden" style="margin-top: 20px; text-align: left">
+        <label for="classInput" style="
               display: block;
               font-weight: 600;
               margin-bottom: 8px;
               color: var(--text-color);
-            "
-            >Nhập tên lớp cần trích xuất:</label
-          >
-          <input
-            type="text"
-            id="classInput"
-            style="
+            ">Nhập tên lớp cần trích xuất:</label>
+        <input type="text" id="classInput" style="
               width: 100%;
               padding: 12px;
               border: 1px solid #ccc;
@@ -109,341 +78,298 @@
               font-size: 16px;
               font-family: &quot;Mulish&quot;, sans-serif;
               box-sizing: border-box;
-            "
-            placeholder="Ví dụ: 10A1, 11A2, 12A3..."
-          />
+            " placeholder="Ví dụ: 10A1, 11A2, 12A3..." />
+      </div>
+
+      <div id="optionsBox" class="collapsible-box options-matrix-card" style="margin-top: 50px">
+        <div class="collapsible-header" id="optionsHeader">
+          <span class="collapsible-title">⚙️ Tùy chọn</span>
+          <span class="collapsible-chevron">▼</span>
         </div>
-
-        <div
-          id="optionsBox"
-          class="collapsible-box options-matrix-card"
-          style="margin-top: 50px"
-        >
-          <div class="collapsible-header" id="optionsHeader">
-            <span class="collapsible-title">⚙️ Tùy chọn</span>
-            <span class="collapsible-chevron">▼</span>
-          </div>
-          <div class="collapsible-body">
-            <div class="collapsible-body-inner">
-              <div class="matrix-toolbar">
-                <div class="matrix-controls-group">
-                  <div class="control-item">
-                    <span class="control-label">Ngày:</span>
-                    <button type="button" id="btnMinusDay" class="ctrl-btn-sm btn-red" title="Bớt ngày">-</button>
-                    <span id="dayCountDisplay" class="count-display">7</span>
-                    <button type="button" id="btnPlusDay" class="ctrl-btn-sm btn-green" title="Thêm ngày">+</button>
-                  </div>
-                  <div class="control-item">
-                    <span class="control-label">Ca chiều:</span>
-                    <button type="button" id="btnMinusPeriod" class="ctrl-btn-sm btn-red" title="Bớt ca chiều">-</button>
-                    <span id="periodCountDisplay" class="count-display">2</span>
-                    <button type="button" id="btnPlusPeriod" class="ctrl-btn-sm btn-green" title="Thêm ca chiều">+</button>
-                  </div>
+        <div class="collapsible-body">
+          <div class="collapsible-body-inner">
+            <div class="matrix-toolbar">
+              <div class="matrix-controls-group">
+                <div class="control-item">
+                  <span class="control-label">Ngày:</span>
+                  <button type="button" id="btnMinusDay" class="ctrl-btn-sm btn-red" title="Bớt ngày">-</button>
+                  <span id="dayCountDisplay" class="count-display">7</span>
+                  <button type="button" id="btnPlusDay" class="ctrl-btn-sm btn-green" title="Thêm ngày">+</button>
                 </div>
-
-                <div class="matrix-actions-group">
-                  <label class="checkbox-inline" style="color: var(--accent-color); font-weight: 800; font-size: 14px;">
-                    <input type="checkbox" id="overrideScheduleCheckbox" /> ⚠️ Ghi đè lịch học
-                  </label>
-                  <button type="button" id="clearScheduleBtn" class="btn btn-action-small">
-                    🗑️ Xóa trắng
-                  </button>
+                <div class="control-item">
+                  <span class="control-label">Ca chiều:</span>
+                  <button type="button" id="btnMinusPeriod" class="ctrl-btn-sm btn-red" title="Bớt ca chiều">-</button>
+                  <span id="periodCountDisplay" class="count-display">2</span>
+                  <button type="button" id="btnPlusPeriod" class="ctrl-btn-sm btn-green"
+                    title="Thêm ca chiều">+</button>
                 </div>
               </div>
 
-              <div class="tkb-matrix-wrapper">
-                <div class="tkb-matrix" id="tkbMatrix">
-                  <div class="m-row m-row-header">
-                    <div class="m-cell m-header m-sticky-corner m-sticky-col-1">TIẾT</div>
-                    <div class="m-cell m-header m-sticky-corner m-sticky-col-2">THỜI GIAN</div>
-                    <div class="m-cell m-header col-day" data-col="2">THỨ HAI</div>
-                    <div class="m-cell m-header col-day" data-col="3">THỨ BA</div>
-                    <div class="m-cell m-header col-day" data-col="4">THỨ TƯ</div>
-                    <div class="m-cell m-header col-day" data-col="5">THỨ NĂM</div>
-                    <div class="m-cell m-header col-day" data-col="6">THỨ SÁU</div>
-                    <div class="m-cell m-header col-day" data-col="7">THỨ BẢY</div>
-                    <div class="m-cell m-header col-day" data-col="8">CHỦ NHẬT</div>
-                  </div>
+              <div class="matrix-actions-group">
+                <label class="checkbox-inline" style="color: var(--accent-color); font-weight: 800; font-size: 14px;">
+                  <input type="checkbox" id="overrideScheduleCheckbox" /> ⚠️ Ghi đè lịch học
+                </label>
+                <button type="button" id="clearScheduleBtn" class="btn btn-action-small">
+                  🗑️ Xóa trắng
+                </button>
+              </div>
+            </div>
 
-                  <div class="m-row">
-                    <div class="m-cell m-section-title">BUỔI SÁNG</div>
-                  </div>
+            <div class="tkb-matrix-wrapper">
+              <div class="tkb-matrix" id="tkbMatrix">
+                <div class="m-row m-row-header">
+                  <div class="m-cell m-header m-sticky-corner m-sticky-col-1">TIẾT</div>
+                  <div class="m-cell m-header m-sticky-corner m-sticky-col-2">THỜI GIAN</div>
+                  <div class="m-cell m-header col-day" data-col="2">THỨ HAI</div>
+                  <div class="m-cell m-header col-day" data-col="3">THỨ BA</div>
+                  <div class="m-cell m-header col-day" data-col="4">THỨ TƯ</div>
+                  <div class="m-cell m-header col-day" data-col="5">THỨ NĂM</div>
+                  <div class="m-cell m-header col-day" data-col="6">THỨ SÁU</div>
+                  <div class="m-cell m-header col-day" data-col="7">THỨ BẢY</div>
+                  <div class="m-cell m-header col-day" data-col="8">CHỦ NHẬT</div>
+                </div>
 
-                  <div class="m-row">
-                    <div class="m-cell m-truy-bai m-disabled-bg">
-                      <span style="font-weight: 700; color: var(--text-secondary)">Truy bài:</span>
-                      <button type="button" class="time-btn time-btn-inline" data-time-id="morning_0">
-                        06:50 → 07:00
-                      </button>
-                    </div>
-                  </div>
+                <div class="m-row">
+                  <div class="m-cell m-section-title">BUỔI SÁNG</div>
+                </div>
 
-                  <script>
-                    const morningTimes = [
-                      "07:00 → 07:45", "07:50 → 08:35", "08:50 → 09:35", "09:40 → 10:25", "10:30 → 11:15",
-                    ];
-                    for (let i = 1; i <= 5; i++) {
-                      document.write(`<div class="m-row">`);
-                      document.write(`<div class="m-cell m-label m-sticky-left m-sticky-col-1">${i}</div>`);
-                      document.write(`<div class="m-cell m-time-cell m-sticky-left m-sticky-col-2"><button type="button" class="time-btn" data-time-id="morning_${i}">${morningTimes[i - 1]}</button></div>`);
-                      for (let d = 2; d <= 8; d++) {
-                        document.write(`<div class="m-cell col-day" data-col="${d}">
+                <div class="m-row">
+                  <div class="m-cell m-truy-bai m-disabled-bg">
+                    <span style="font-weight: 700; color: var(--text-secondary)">Truy bài:</span>
+                    <button type="button" class="time-btn time-btn-inline" data-time-id="morning_0">
+                      06:50 → 07:00
+                    </button>
+                  </div>
+                </div>
+
+                <script>
+                  const morningTimes = [
+                    "07:00 → 07:45", "07:50 → 08:35", "08:50 → 09:35", "09:40 → 10:25", "10:30 → 11:15",
+                  ];
+                  for (let i = 1; i <= 5; i++) {
+                    document.write(`<div class="m-row">`);
+                    document.write(`<div class="m-cell m-label m-sticky-left m-sticky-col-1">${i}</div>`);
+                    document.write(`<div class="m-cell m-time-cell m-sticky-left m-sticky-col-2"><button type="button" class="time-btn" data-time-id="morning_${i}">${morningTimes[i - 1]}</button></div>`);
+                    for (let d = 2; d <= 8; d++) {
+                      document.write(`<div class="m-cell col-day" data-col="${d}">
                           <textarea class="matrix-input morn-input" data-day="${d}" data-period="${i}"></textarea>
                         </div>`);
-                      }
-                      document.write(`</div>`);
                     }
-                  </script>
+                    document.write(`</div>`);
+                  }
+                </script>
 
-                  <div class="m-row">
-                    <div class="m-cell m-section-title">BUỔI CHIỀU</div>
-                  </div>
+                <div class="m-row">
+                  <div class="m-cell m-section-title">BUỔI CHIỀU</div>
+                </div>
 
-                  <script>
-                    const aftTimes = [
-                      "13:15 → 14:00", "14:00 → 14:45", "14:50 → 15:35", "15:45 → 16:30", "16:35 → 17:20", "17:25 → 18:10", "18:15 → 19:00", "19:15 → 20:00",
-                    ];
-                    for (let i = 1; i <= 8; i++) {
-                      document.write(`<div class="m-row row-aft" data-row="${i}">`);
-                      document.write(`<div class="m-cell m-label m-sticky-left m-sticky-col-1">${i}</div>`);
-                      document.write(`<div class="m-cell m-time-cell m-sticky-left m-sticky-col-2"><button type="button" class="time-btn" data-time-id="afternoon_${i}">${aftTimes[i - 1]}</button></div>`);
-                      for (let d = 2; d <= 8; d++) {
-                        document.write(`<div class="m-cell col-day" data-col="${d}">
+                <script>
+                  const aftTimes = [
+                    "13:15 → 14:00", "14:00 → 14:45", "14:50 → 15:35", "15:45 → 16:30", "16:35 → 17:20", "17:25 → 18:10", "18:15 → 19:00", "19:15 → 20:00",
+                  ];
+                  for (let i = 1; i <= 8; i++) {
+                    document.write(`<div class="m-row row-aft" data-row="${i}">`);
+                    document.write(`<div class="m-cell m-label m-sticky-left m-sticky-col-1">${i}</div>`);
+                    document.write(`<div class="m-cell m-time-cell m-sticky-left m-sticky-col-2"><button type="button" class="time-btn" data-time-id="afternoon_${i}">${aftTimes[i - 1]}</button></div>`);
+                    for (let d = 2; d <= 8; d++) {
+                      document.write(`<div class="m-cell col-day" data-col="${d}">
                           <textarea class="matrix-input aft-input" data-day="${d}" data-period="${i}"></textarea>
                         </div>`);
-                      }
-                      document.write(`</div>`);
                     }
-                  </script>
-                </div>
+                    document.write(`</div>`);
+                  }
+                </script>
               </div>
-              </div>
             </div>
           </div>
         </div>
-
-        <div id="submitContainer" class="hidden text-center mt-24">
-          <button id="uploadBtn" class="btn btn-primary">
-            Tiến Hành Xử Lý
-          </button>
-        </div>
-
-        <div id="loadingBox" class="loading-box hidden">
-          <div class="loading-content">
-            <div class="spinner"></div>
-            <div class="loading-text">
-              <p class="loading-main">Đang tiến hành xử lý!</p>
-              <p class="loading-sub">Vui lòng đợi...</p>
-            </div>
-          </div>
-          <button id="cancelProcessBtn" class="btn btn-danger btn-small">
-            Hủy 🛑
-          </button>
-        </div>
-      </section>
-
-      <section id="resultCard" class="card result-card hidden">
-        <div class="result-header">
-          <span class="status-badge">✓ Đã xử lý xong</span>
-        </div>
-
-        <div class="grid-layout">
-          <div class="grid-column">
-            <h3 class="section-heading">Ảnh Thời Khóa Biểu</h3>
-            <div class="image-wrapper">
-              <img id="tkbImage" src="" alt="Thời khóa biểu ảnh" />
-            </div>
-            <div class="action-buttons">
-              <button id="printBtn" class="btn btn-secondary">In 🖨️</button>
-              <button id="downloadPdfBtn" class="btn btn-secondary">Xuất sang PDF 📄</button>
-              <button id="downloadBtn" class="btn btn-success">Xuất thành ảnh 🖼️</button>
-              <button id="reprocessBtn" class="btn btn-danger">
-                Xử lý lại 🔄
-              </button>
-            </div>
-          </div>
-
-          <div class="grid-column">
-            <div class="text-header-row">
-              <h3 class="section-heading">Văn bản rút gọn</h3>
-              <button id="copyBtn" class="btn btn-action-small">
-                Sao chép
-              </button>
-            </div>
-            <textarea
-              id="shortText"
-              readonly
-              class="modern-textarea"
-              placeholder="Nội dung sẽ xuất hiện tại đây..."
-            ></textarea>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <p>
-        © 2026 TKB Tools. Một dự án của Trần Công Thành - K60G THPT Cẩm Giàng.
-      </p>
-      <div class="footer-links">
-        <a href="../feedback/" class="footer-link">💬 Gửi góp ý & Báo lỗi</a>
-        <a id="resetDataBtn" class="footer-link" style="color: #ef4444; border-color: #fca5a5; background-color: rgba(239, 68, 68, 0.1);">🗑️ Xóa dữ liệu trang web</a>
-        <a
-          href="https://github.com/TKBTools"
-          class="footer-link github-link"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg class="github-icon" viewBox="0 0 24 24" width="16" height="16">
-            <path
-              fill="currentColor"
-              d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"
-            />
-          </svg>
-          <span>GitHub Repo</span>
-        </a>
       </div>
-    </footer>
-
-    <div id="lightboxOverlay" class="lightbox-overlay">
-      <span id="lightboxClose" class="lightbox-close">&times;</span>
-      <img
-        id="lightboxImg"
-        class="lightbox-img"
-        src=""
-        alt="Ảnh TKB phóng to"
-      />
-      <p class="lightbox-hint desktop-only">
-        Dùng con lăn chuột để phóng to / thu nhỏ
-      </p>
-    </div>
-
-    <div id="devNoticeModal" class="lightbox-overlay">
-      <div class="modal-content card" style="max-width: 420px; width: 90%; text-align: center; padding: 25px;">
-        <h3 style="margin-bottom: 12px; color: var(--accent-color); font-size: 18px;">👋 Chào mừng đến với TKB Tools</h3>
-        <p style="margin-bottom: 20px; font-size: 14px; line-height: 1.5; color: var(--text-secondary);">
-          <strong>Dành cho người mới</strong>, hãy xem <a href="../HDSD/HS.html" target="_blank" rel="noopener" class="btn btn-secondary btn-small" style="padding: 4px 8px;">❓ HDSD</a> để biết cách dùng.<br><br>
-          <strong>Nếu gặp lỗi</strong>, hãy gửi <a href="../feedback/" class="footer-link" style="padding: 4px 8px; font-size: 13px;">💬 Góp ý & Báo lỗi</a> cho mình nhé!
-        </p>
-        <button id="dismissNoticeBtn" class="btn btn-primary" style="width: 100%; padding: 10px;">Đã hiểu & Bắt đầu</button>
       </div>
-    </div>
 
-    <div id="overrideWarningModal" class="lightbox-overlay">
-      <div
-        class="modal-content card"
-        style="
+      <div id="submitContainer" class="hidden text-center mt-24">
+        <button id="uploadBtn" class="btn btn-primary">
+          Tiến Hành Xử Lý
+        </button>
+      </div>
+
+      <div id="loadingBox" class="loading-box hidden">
+        <div class="loading-content">
+          <div class="spinner"></div>
+          <div class="loading-text">
+            <p class="loading-main">Đang tiến hành xử lý!</p>
+            <p class="loading-sub">Vui lòng đợi...</p>
+          </div>
+        </div>
+        <button id="cancelProcessBtn" class="btn btn-danger btn-small">
+          Hủy 🛑
+        </button>
+      </div>
+    </section>
+
+    <section id="resultCard" class="card result-card hidden">
+      <div class="result-header">
+        <span class="status-badge">✓ Đã xử lý xong</span>
+      </div>
+
+      <div class="grid-layout">
+        <div class="grid-column">
+          <h3 class="section-heading">Ảnh Thời Khóa Biểu</h3>
+          <div class="image-wrapper">
+            <img id="tkbImage" src="" alt="Thời khóa biểu ảnh" />
+          </div>
+          <div class="action-buttons">
+            <button id="printBtn" class="btn btn-secondary">In 🖨️</button>
+            <button id="downloadPdfBtn" class="btn btn-secondary">Xuất sang PDF 📄</button>
+            <button id="downloadBtn" class="btn btn-success">Xuất thành ảnh 🖼️</button>
+            <button id="reprocessBtn" class="btn btn-danger">
+              Xử lý lại 🔄
+            </button>
+          </div>
+        </div>
+
+        <div class="grid-column">
+          <div class="text-header-row">
+            <h3 class="section-heading">Văn bản rút gọn</h3>
+            <button id="copyBtn" class="btn btn-action-small">
+              Sao chép
+            </button>
+          </div>
+          <textarea id="shortText" readonly class="modern-textarea"
+            placeholder="Nội dung sẽ xuất hiện tại đây..."></textarea>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      © 2026 TKB Tools. Một dự án của Trần Công Thành - K60G THPT Cẩm Giàng.
+    </p>
+    <div class="footer-links">
+      <a href="../feedback/" class="footer-link">💬 Gửi góp ý & Báo lỗi</a>
+      <a id="resetDataBtn" class="footer-link"
+        style="color: #ef4444; border-color: #fca5a5; background-color: rgba(239, 68, 68, 0.1);">🗑️ Xóa dữ liệu trang
+        web</a>
+      <a href="https://github.com/TKBTools" class="footer-link github-link" target="_blank" rel="noopener noreferrer">
+        <svg class="github-icon" viewBox="0 0 24 24" width="16" height="16">
+          <path fill="currentColor"
+            d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+        </svg>
+        <span>GitHub Repo</span>
+      </a>
+    </div>
+  </footer>
+
+  <div id="lightboxOverlay" class="lightbox-overlay">
+    <span id="lightboxClose" class="lightbox-close">&times;</span>
+    <img id="lightboxImg" class="lightbox-img" src="" alt="Ảnh TKB phóng to" />
+    <p class="lightbox-hint desktop-only">
+      Dùng con lăn chuột để phóng to / thu nhỏ
+    </p>
+  </div>
+
+  <div id="devNoticeModal" class="lightbox-overlay">
+    <div class="modal-content card" style="max-width: 420px; width: 90%; text-align: center; padding: 25px;">
+      <h3 style="margin-bottom: 12px; color: var(--accent-color); font-size: 18px;">👋 Chào mừng đến với TKB Tools</h3>
+      <p style="margin-bottom: 20px; font-size: 14px; line-height: 1.5; color: var(--text-secondary);">
+        <strong>Dành cho người mới</strong>, hãy xem <a href="../HDSD/HS.html" target="_blank" rel="noopener"
+          class="btn btn-secondary btn-small" style="padding: 4px 8px;">❓ HDSD</a> để biết cách dùng.<br><br>
+        <strong>Nếu gặp lỗi</strong>, hãy gửi <a href="../feedback/" class="footer-link"
+          style="padding: 4px 8px; font-size: 13px;">💬 Góp ý & Báo lỗi</a> cho mình nhé!
+      </p>
+      <button id="dismissNoticeBtn" class="btn btn-primary" style="width: 100%; padding: 10px;">Đã hiểu & Bắt
+        đầu</button>
+    </div>
+  </div>
+
+  <div id="overrideWarningModal" class="lightbox-overlay">
+    <div class="modal-content card" style="
           max-width: 500px;
           width: 90%;
           text-align: center;
           position: relative;
-        "
-      >
-        <h3 style="margin-bottom: 15px; color: #ef4444">
-          ⚠️ Lưu ý về Ghi đè lịch học
-        </h3>
-        <p
-          class="override-warning-text"
-          style="
+        ">
+      <h3 style="margin-bottom: 15px; color: #ef4444">
+        ⚠️ Lưu ý về Ghi đè lịch học
+      </h3>
+      <p class="override-warning-text" style="
             text-align: left;
             margin-bottom: 20px;
             color: var(--text-secondary);
             line-height: 1.6;
-          "
-        >
-          Tính năng <strong>Ghi đè</strong> cho phép bạn tự do chỉnh sửa
-          <strong>toàn bộ môn học (cả Sáng và Chiều)</strong> thay vì lấy tự
-          động từ file PDF.<br /><br />
-          Những ô bạn nhập chữ sẽ được in thẳng vào TKB. Nếu xóa trắng, ô đó sẽ
-          hiển thị là trống.
-        </p>
-        <div class="override-modal-footer">
-          <label class="checkbox-inline">
-            <input type="checkbox" id="dontShowOverrideNoticeAgain" /> Không
-            hiện thông báo này nữa
-          </label>
-          <button id="confirmOverrideBtn" class="btn btn-primary">
-            Đã hiểu
-          </button>
-        </div>
+          ">
+        Tính năng <strong>Ghi đè</strong> cho phép bạn tự do chỉnh sửa
+        <strong>toàn bộ môn học (cả Sáng và Chiều)</strong> thay vì lấy tự
+        động từ file PDF.<br /><br />
+        Những ô bạn nhập chữ sẽ được in thẳng vào TKB. Nếu xóa trắng, ô đó sẽ
+        hiển thị là trống.
+      </p>
+      <div class="override-modal-footer">
+        <label class="checkbox-inline">
+          <input type="checkbox" id="dontShowOverrideNoticeAgain" /> Không
+          hiện thông báo này nữa
+        </label>
+        <button id="confirmOverrideBtn" class="btn btn-primary">
+          Đã hiểu
+        </button>
       </div>
     </div>
+  </div>
 
-    <div id="timePickerModal" class="lightbox-overlay">
-      <div
-        class="modal-content card"
-        style="max-width: 350px; width: 90%; text-align: center"
-      >
-        <h3 style="margin-bottom: 20px; color: var(--accent-color)">
-          ⏰ Điền thời gian tùy chỉnh
-        </h3>
-        <div
-          style="
+  <div id="timePickerModal" class="lightbox-overlay">
+    <div class="modal-content card" style="max-width: 350px; width: 90%; text-align: center">
+      <h3 style="margin-bottom: 20px; color: var(--accent-color)">
+        ⏰ Điền thời gian tùy chỉnh
+      </h3>
+      <div style="
             display: flex;
             flex-direction: column;
             gap: 15px;
             margin-bottom: 20px;
-          "
-        >
-          <div
-            style="
+          ">
+        <div style="
               display: flex;
               align-items: center;
               justify-content: space-between;
-            "
-          >
-            <label style="font-weight: 600">Bắt đầu:</label>
-            <input
-              type="time"
-              id="modalStartTime"
-              class="form-control"
-              style="width: 150px; padding: 8px"
-            />
-          </div>
-          <div
-            style="
+            ">
+          <label style="font-weight: 600">Bắt đầu:</label>
+          <input type="time" id="modalStartTime" class="form-control" style="width: 150px; padding: 8px" />
+        </div>
+        <div style="
               display: flex;
               align-items: center;
               justify-content: space-between;
-            "
-          >
-            <label style="font-weight: 600">Kết thúc:</label>
-            <input
-              type="time"
-              id="modalEndTime"
-              class="form-control"
-              style="width: 150px; padding: 8px"
-            />
-          </div>
-        </div>
-        <div style="display: flex; gap: 10px">
-          <button
-            id="modalTimeCancelBtn"
-            class="btn btn-secondary"
-            style="flex: 1"
-          >
-            Hủy
-          </button>
-          <button id="modalTimeSaveBtn" class="btn btn-primary" style="flex: 1">
-            Xong
-          </button>
+            ">
+          <label style="font-weight: 600">Kết thúc:</label>
+          <input type="time" id="modalEndTime" class="form-control" style="width: 150px; padding: 8px" />
         </div>
       </div>
-    </div>
-    <div id="exportModal" class="lightbox-overlay">
-      <div class="modal-content card" style="max-width: 380px; width: 90%; text-align: center; position: relative; padding: 25px;">
-        <span id="exportModalClose" class="lightbox-close" style="left: 15px; right: auto; top: 15px;">&times;</span>
-        
-        <h3 style="margin-bottom: 20px; margin-top: 5px; color: var(--accent-color)">Tùy chọn Xuất file</h3>
-        <div style="display: flex; gap: 12px; margin-bottom: 20px;">
-          <button id="exportDownloadBtn" class="btn btn-secondary" style="flex: 1;">⬇️ Tải về máy</button>
-          <button id="exportShareBtn" class="btn btn-primary" style="flex: 1;">📤 Chia sẻ</button>
-        </div>
-        <label class="checkbox-inline" style="justify-content: center; color: var(--text-secondary);">
-          <input type="checkbox" id="rememberExportChoice"> Ghi nhớ lựa chọn cho lần sau
-        </label>
+      <div style="display: flex; gap: 10px">
+        <button id="modalTimeCancelBtn" class="btn btn-secondary" style="flex: 1">
+          Hủy
+        </button>
+        <button id="modalTimeSaveBtn" class="btn btn-primary" style="flex: 1">
+          Xong
+        </button>
       </div>
     </div>
-    <script src="../scripts.js"></script>
-  </body>
+  </div>
+  <div id="exportModal" class="lightbox-overlay">
+    <div class="modal-content card"
+      style="max-width: 380px; width: 90%; text-align: center; position: relative; padding: 25px;">
+      <span id="exportModalClose" class="lightbox-close" style="left: 15px; right: auto; top: 15px;">&times;</span>
+
+      <h3 style="margin-bottom: 20px; margin-top: 5px; color: var(--accent-color)">Tùy chọn Xuất file</h3>
+      <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+        <button id="exportDownloadBtn" class="btn btn-secondary" style="flex: 1;">⬇️ Tải về máy</button>
+        <button id="exportShareBtn" class="btn btn-primary" style="flex: 1;">📤 Chia sẻ</button>
+      </div>
+      <label class="checkbox-inline" style="justify-content: center; color: var(--text-secondary);">
+        <input type="checkbox" id="rememberExportChoice"> Ghi nhớ lựa chọn cho lần sau
+      </label>
+    </div>
+  </div>
+  <script src="../scripts.js"></script>
+</body>
+
 </html>
