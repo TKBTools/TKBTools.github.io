@@ -353,14 +353,10 @@ fileInput.addEventListener("change", async () => {
   if (fileInput.files.length > 0) {
     const file = fileInput.files[0];
     const ext = file.name.split(".").pop().toLowerCase();
-    const validExts = isTeacherMode ? ["xlsx", "xls", "csv"] : ["pdf"];
+    const validExts = ["pdf", "xlsx", "xls", "csv"];
 
     if (!validExts.includes(ext)) {
-      alert(
-        isTeacherMode
-          ? "Lỗi: Bản giáo viên chỉ hỗ trợ tệp định dạng Excel (.xlsx, .xls, .csv)!"
-          : "Lỗi: Bản học sinh chỉ hỗ trợ tệp định dạng .PDF!",
-      );
+      alert("Lỗi: Chỉ hỗ trợ tệp định dạng .PDF, .XLSX, .XLS, .CSV!");
       resetFileInput();
       return;
     }
