@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const videos = document.querySelectorAll(".guide-img-placeholder video");
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
   const observerOptions = {
     root: null,
@@ -23,5 +24,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }, observerOptions);
 
-  videos.forEach((video) => observer.observe(video));
+  videos.forEach((video) => {
+    const desktopSrc = video.getAttribute("data-desktop");
+    const mobileSrc = video.getAttribute("data-mobile");
+
+    if (desktopSrc && mobileSrc) {
+      const sourceEl = document.createElement("source");
+      sourceEl.src = isMobile ? mobileSrc : desktopSrc;
+      sourceEl.type = "video/webm";
+      video.appendChild(sourceEl);
+      video.load();
+    }
+
+    observer.observe(video);
+  });
 });
