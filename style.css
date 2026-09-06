@@ -1040,10 +1040,10 @@ input[type="file"].form-control {
   position: relative;
   border: 1px solid var(--text-primary);
   border-radius: 4px;
-
   max-height: none;
   overflow-y: visible;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 @media screen and (max-width: 992px) {
@@ -1059,6 +1059,7 @@ input[type="file"].form-control {
   flex-direction: column;
   gap: 1px;
   background-color: var(--text-primary);
+  min-width: min-content;
 }
 
 .m-row {
@@ -1087,6 +1088,7 @@ input[type="file"].form-control {
   min-height: 40px;
   font-size: 13px;
   position: relative;
+  box-shadow: inset 0 0 0 0.5px var(--text-primary);
 }
 
 .m-header {
@@ -1217,7 +1219,8 @@ input[type="file"].form-control {
 }
 
 @media screen and (max-width: 768px) {
-  .matrix-input {
-    font-size: 16px !important;
+  .m-sticky-col-2 {
+    position: static !important;
+    box-shadow: inset 0 0 0 0.5px var(--text-primary) !important;
   }
 }
