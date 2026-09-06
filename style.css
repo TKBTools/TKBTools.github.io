@@ -761,14 +761,52 @@ body {
 }
 
 .guide-note {
-  margin-top: 30px;
-  padding: 18px 20px;
+  margin-top: 40px;
+  padding: 20px 24px;
   border-radius: var(--radius);
-  background-color: var(--bg-input);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  font-size: 14px;
+
+  background-color: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-left: 5px solid #f59e0b;
+
+  color: var(--text-primary);
+  font-size: 15px;
   line-height: 1.6;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.guide-note:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.guide-note strong {
+  color: #d97706;
+  font-size: 16.5px;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+[data-theme="dark"] .guide-note strong {
+  color: #fbbf24;
+}
+
+.guide-note ul {
+  margin-top: 4px;
+  margin-left: 36px;
+  padding-left: 0;
+}
+
+.guide-note li {
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.guide-note li:last-child {
+  margin-bottom: 0;
 }
 
 @media (max-width: 600px) {

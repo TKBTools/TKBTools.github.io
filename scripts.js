@@ -655,7 +655,6 @@ async function executeShare(target) {
     if (navigator.canShare && navigator.canShare({ files: [fileToShare] })) {
       await navigator.share({
         title: "TKB Tools",
-        text: "Thời khóa biểu của mình này!",
         files: [fileToShare],
       });
       return true;
